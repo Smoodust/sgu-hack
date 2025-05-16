@@ -11,7 +11,12 @@ class API {
   async getTable(): Promise<ITable[]> {
     try {
       const res = await axios.get(this.host + this.getTableLogsWay);
-      if (res) return res.data;
+      if (res) {
+        return res.data.map((el: any, i: number) => {
+          el['id'] = i;
+          return el;
+        });
+      }
       return [];
     } catch (error) {
       return [];

@@ -1,19 +1,10 @@
 import { observer } from 'mobx-react-lite';
 import ModalStore from '../stores/Modal.store';
-import {
-  TableCellHeadStyled,
-  TableCellStyled,
-} from '../styled/TableElements.styled';
+
 import API from '../utils/API';
 import { ITable } from '../utils/Interfaces/ITable';
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from '@mui/material';
+import { Paper, TableContainer } from '@mui/material';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 
 const TableElement = observer(() => {
@@ -27,37 +18,67 @@ const TableElement = observer(() => {
         setTableData(res);
       });
   }, []);
+  const paginationModel = { page: 0, pageSize: 7 };
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCellHeadStyled>Дата</TableCellHeadStyled>
-            <TableCellHeadStyled align="right">Пакет</TableCellHeadStyled>
-            <TableCellHeadStyled align="right">Категория</TableCellHeadStyled>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {tableData.map((row, i) => (
-            <TableRow
-              key={i}
-              onClick={() => {
-                ModalStore.setModuleData('name', row.name);
-                ModalStore.setModuleData('date', row.date);
-                ModalStore.setModuleData('category', row.category);
+      <DataGrid
+        sx={{
+          border: 0,
+
+          '& .MuiDataGrid-overlayWrapperInner': {
+            background: ' #1f1f1f !important',
+            color: '#bbbbbb !important',
+            fontFamily: 'Montserrat !important',
+          },
+          '& .MuiDataGrid-columnHeader': {
+            background: ' #1f1f1f !important',
+            color: '#bbbbbb !important',
+            fontSize: '1rem !important',
+            cursor: 'pointer',
+            fontFamily: 'Montserrat !important',
+          },
+          '& .MuiDataGrid-cell': {
+            background: '  #1f1f1f !important',
+            color: '#bbbbbb !important',
+
+            fontFamily: 'Montserrat !important',
+          },
+          '& .MuiDataGrid-footerContainer': {
+            background: ' #1f1f1f !important',
+            cursor: 'pointer',
+            fontFamily: 'Montserrat !important',
+          },
+          '& .MuiSvgIcon-root': {
+            fill: '#bbbbbb !important',
+          },
+          '& .MuiToolbar-root': {
+            color: '#bbbbbb !important',
+            cursor: 'pointer',
+            fontFamily: 'Montserrat !important',
+          },
+          '& .MuiDataGrid-filler': {
+            background: ' #BBBBBB !important',
+          },
+          '.MuiDataGrid-columnSeparator': {
+            fill: '#bbbbbb !important',
+          },
+        }}
+        checkboxSelection={false}
+        rows={tableData}
+          onRowClick={(params) => {
+                ModalStore.setModuleData('name', params.row.name);
+                ModalStore.setModuleData('date', params.row.date);
+                ModalStore.setModuleData('category', params.row.category);
                 ModalStore.setOpen(true);
               }}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCellStyled component="th" scope="row">
-                {row.date}
-              </TableCellStyled>
-              <TableCellStyled align="right">{row.name}</TableCellStyled>
-              <TableCellStyled align="right">{row.category}</TableCellStyled>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+        columns={[
+          { field: 'date', headerName: 'Дата', flex: 1 },
+          { field: 'name', headerName: 'Пакет', flex: 1 },
+          { field: 'category', headerName: 'Категория', flex: 1 },
+        ]}
+        initialState={{ pagination: { paginationModel } }}
+        pageSizeOptions={[5, 10]}
+      />
     </TableContainer>
   );
 });

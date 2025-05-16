@@ -13,7 +13,7 @@ const Mean = observer(() => {
   return (
     <Frame>
       {ModalStore.getOpen() ? <ModalComponent /> : ''}
-      <Title>Дашборд</Title>
+      <Title>Name Error</Title>
       <Grid container spacing={2}>
         <Grid size={6}>
           <LineChartComponent />
