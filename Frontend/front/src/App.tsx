@@ -1,10 +1,10 @@
 import React from 'react';
-import './App.css';
+import Mean from './Pages/Mean';
 
 function App() {
   return (
     <div className="App">
-
+      <Mean />
     </div>
   );
 }
