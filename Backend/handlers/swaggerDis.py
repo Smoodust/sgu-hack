@@ -83,8 +83,8 @@ def custom_openapi(app: FastAPI):
         },
         "/graphs": {
             "get": {
-                "summary": "Получить все графики",
-                "description": "Возвращает список всех доступных графиков",
+                "summary": "Графики количества неисправленных пакетов за последний месяц",
+                "description": "Возвращает статистику по количеству неисправленных пакетов за последний месяц",
                 "responses": {
                     "200": {
                         "description": "Успешный ответ",
@@ -97,7 +97,12 @@ def custom_openapi(app: FastAPI):
                                             "type": "array",
                                             "items": {
                                                 "type": "object"
-                                            }
+                                            },
+                                            "description": "Данные для построения графиков"
+                                        },
+                                        "count_logs": {
+                                            "type": "integer",
+                                            "description": "Общее количество логов"
                                         }
                                     }
                                 }

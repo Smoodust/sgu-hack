@@ -32,7 +32,7 @@ async def get_log(id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-## Графики общие 
+## Графики количества неисправленных пакетов за последний месяц
 @router.get("/graphs")
 async def get_graphs():
     try:
@@ -47,7 +47,8 @@ async def get_graphs_period(period: dict):
     try:
         startDate = datetime.strptime(period["startDate"], "%Y-%m-%d:%H:%M:%S")
         endDate = datetime.strptime(period["endDate"], "%Y-%m-%d:%H:%M:%S")
-        return JSONResponse(content={"graphs":dbase.get_graphs_period(startDate=startDate, endDate=endDate)}, status_code=200)
+        graphs = dbase.get_graphs_period(startDate=startDate, endDate=endDate)
+        return JSONResponse(content={"graphs":graphs['graphs'], "count_logs":graphs['count_logs']}, status_code=200)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -55,7 +56,8 @@ async def get_graphs_period(period: dict):
 @router.get("/graphs/package/{package}")
 async def get_graphs_package(package: str):
     try:
-        return JSONResponse(content={"graphs":dbase.get_graphs_package(package)}, status_code=200)
+        graphs = dbase.get_graphs_package(package)
+        return JSONResponse(content={"graphs":graphs['graphs'], "count_logs":graphs['count_logs']}, status_code=200)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -66,7 +68,8 @@ async def get_graphs_package_period(body: dict):
         package = body["package"]
         startDate = datetime.strptime(body["startDate"], "%Y-%m-%d:%H:%M:%S")
         endDate = datetime.strptime(body["endDate"], "%Y-%m-%d:%H:%M:%S")
-        return JSONResponse(content={"graphs":dbase.get_graphs_package_period(package=package, startDate=startDate, endDate=endDate)}, status_code=200)
+        graphs = dbase.get_graphs_package_period(package=package, startDate=startDate, endDate=endDate)
+        return JSONResponse(content={"graphs":graphs['graphs'], "count_logs":graphs['count_logs']}, status_code=200)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

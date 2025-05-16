@@ -1,6 +1,6 @@
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-from config import user, password, host, port, database
+from .config import user, password, host, port, database
 
 def create_tables():
     try:
