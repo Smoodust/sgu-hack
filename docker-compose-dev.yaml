@@ -108,7 +108,7 @@ services:
       - ENV=development
       - PYTHONUNBUFFERED=1
     volumes:
-      - ./:/app
+      - ./Backend:/app 
       - /app/__pycache__  
     ports:
       - "8001:8001"
@@ -143,11 +143,11 @@ services:
 
 #################### FRONTEND #################### 
 
-frontend_dev:
+  frontend_dev:
     build:
       context: ./Frontend
       dockerfile: Dockerfile.dev
-      container_name: frontend_dev
+    container_name: frontend_dev
     ports:
       - "3000:3000"
     volumes:
