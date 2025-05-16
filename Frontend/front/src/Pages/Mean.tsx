@@ -4,11 +4,15 @@ import { Frame, Title } from '../styled/Base.styled';
 import { Grid } from '@mui/material';
 import TableElement from '../components/Table';
 import { useState } from 'react';
+import ModalComponent from '../components/Modal';
+import ModalStore from '../stores/Modal.store';
+import { observer } from 'mobx-react-lite';
 
-const Mean = () => {
+const Mean = observer(() => {
   const [theme, setTheme] = useState<string>('black');
   return (
     <Frame>
+      {ModalStore.getOpen() ? <ModalComponent /> : ''}
       <Title>Дашборд</Title>
       <Grid container spacing={2}>
         <Grid size={6}>
@@ -23,6 +27,6 @@ const Mean = () => {
       </Grid>
     </Frame>
   );
-};
+});
 
 export default Mean;

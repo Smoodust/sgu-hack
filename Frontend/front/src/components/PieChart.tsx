@@ -18,21 +18,27 @@ const PieChartComponent = () => {
   return (
     <PieChartElement>
       <Gauge
-      sx={{
-          backgroundColor: '#181a1f',
-         '& .MuiGauge-referenceArc': {
-                fill: '#ccccdd'
-
+        sx={{
+          backgroundColor: '#1F1F1F',
+          '& .MuiGauge-referenceArc': {
+            fill: '#ccccdd',
           },
-           '& .MuiGauge-valueArc': {
-                 fill: '#f2495c',
+          '& .MuiGauge-valueArc': {
+            fill: '#f2495c',
           },
-             '& .MuiGauge-valueText': {
+          '& .MuiGauge-valueText': {
             stroke: '#ccccdd',
-            fontSize: "2rem"
+            fontSize: '2rem',
+            fontFamily: 'Montserrat',
+            fill: '#ccccdd !important',
           },
-       
-      }}
+          '& .MuiGauge-valueText tspan': {
+            stroke: '#ccccdd',
+            fontSize: '2rem',
+            fontFamily: 'Montserrat',
+            fill: '#ccccdd !important',
+          },
+        }}
         value={gaugeData?.failed}
         startAngle={(gaugeData?.success + gaugeData?.failed) * -1}
         endAngle={gaugeData?.success + gaugeData?.failed}

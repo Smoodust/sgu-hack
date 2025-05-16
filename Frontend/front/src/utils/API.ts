@@ -7,6 +7,7 @@ class API {
   private getTableLogsWay: string = '/table';
   private getCountLogsWay: string = '/logs';
   private getGaugeWay: string = '/gauge';
+  private getModalWay: string = '/modal';
   async getTable(): Promise<ITable[]> {
     try {
       const res = await axios.get(this.host + this.getTableLogsWay);
@@ -35,6 +36,18 @@ class API {
       return { success: 0, failed: 100 };
     } catch (error) {
       return { success: 0, failed: 100 };
+    }
+  }
+  async getModalData(): Promise<any> {
+    try {
+      const res = await axios.get(this.host + this.getModalWay);
+
+      if (res) {
+        return res.data[0];
+      }
+      return {};
+    } catch (error) {
+      return {};
     }
   }
 }

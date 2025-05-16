@@ -6,8 +6,9 @@ const LineChartElement = styled(Container)`
   height: 100% !important;
 `;
 const PieChartElement = styled(Container)`
-display: flex;
-height: 100% !important;
-padding: 0 !important;
-align-items: center;`;
+  display: flex;
+  height: 100% !important;
+  padding: 0 !important;
+  align-items: center;
+`;
 export { LineChartElement, PieChartElement };

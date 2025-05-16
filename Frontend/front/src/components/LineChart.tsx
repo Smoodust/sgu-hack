@@ -18,7 +18,7 @@ const LineChartComponent = () => {
     <LineChartElement>
       <LineChart
         sx={{
-          backgroundColor: '#181a1f',
+          backgroundColor: '#1F1F1F',
           '& text tspan': {
             fill: '#ccccdd',
           },
@@ -27,7 +27,6 @@ const LineChartComponent = () => {
           },
           '& .MuiChartsAxis-line': {
             stroke: '#ccccdd !important',
-
           },
           '& .MuiChartsAxis-label': {
             fill: '#ccccdd',
@@ -40,7 +39,6 @@ const LineChartComponent = () => {
           {
             data: dataset.map((item) => item.date),
             scaleType: 'point',
-            
           },
         ]}
         series={[
