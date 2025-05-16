@@ -41,4 +41,5 @@ app.openapi = lambda: custom_openapi(app)
 app.include_router(router)
 
 if __name__ == "__main__":
+    parse_logs(URL_PARSE_LOGS)
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
