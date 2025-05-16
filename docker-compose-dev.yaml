@@ -98,19 +98,26 @@ services:
       - backend-network
       - monitoring 
 
-  goapp:
+  backend-dev:
     build: 
       context: ./Backend
-      dockerfile: Dockerfile 
-      target: production-stage
-    container_name: goapp
+      dockerfile: Dockerfile.dev
+      target: development
+    container_name: backend-dev
     environment:
-      DB_HOST: db  
+      - ENV=development
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./:/app
+      - /app/__pycache__  
     ports:
-      - "8080:8080"
+      - "8001:8001"
+    command: uvicorn main:app --host 0.0.0.0 --port 8001 --reload
+    restart: unless-stopped
     networks:
       - backend-network
       - monitoring 
+
   promtail:
     image: grafana/promtail:latest
     container_name: promtail
