@@ -1,0 +1,66 @@
+apiVersion: 1
+groups:
+    - orgId: 1
+      name: Drift
+      folder: Drift
+      interval: 10s
+      rules:
+        - uid: aelvlmficpfr4c
+          title: Drift Alert
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: PBFA97CFB590B2093
+              model:
+                disableTextWrap: false
+                editorMode: builder
+                expr: drift_score{instance="development:8000"}
+                fullMetaSearch: false
+                includeNullMetadata: true
+                instant: true
+                intervalMs: 1000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+                useBackend: false
+            - refId: C
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 0.07
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          noDataState: NoData
+          execErrState: Error
+          for: 10s
+          keepFiringFor: 10s
+          annotations:
+            description: Oh, no! It's Drifting!!!!
+            summary: Oh, no! It's Drifting!!!!
+          labels:
+            drfit: "true"
+          isPaused: false
+          notification_settings:
+            receiver: Telegram Bot
