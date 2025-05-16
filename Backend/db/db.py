@@ -2,11 +2,12 @@ import datetime
 import random
 import string
 from pprint import pprint
-
+from datetime import timedelta
 import requests
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from .config import URL_PARSE_LOGS, user, password, host, port, database
+from .create_tables import create_tables
 
 class Dbase:
     def __init__(self):
@@ -18,6 +19,7 @@ class Dbase:
                                            database=database)
         self.connection.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         self.cursor = self.connection.cursor()
+        create_tables()
 
     def new_logs(self, branch, arch, name, hash, version, url, updated, tbfs_since):
         self.cursor.execute("""INSERT INTO logs(branch, arch, name, hash, version, url, updated, tbfs_since)
@@ -64,23 +66,96 @@ class Dbase:
     
 
     def get_graphs(self):
-        self.cursor.execute("""SELECT * FROM logs""")
+        self.cursor.execute("""SELECT * FROM logs WHERE tbfs_since > NOW() - INTERVAL '1 month'""")
         logs = self.cursor.fetchall()
         count_logs = len(logs)
-        # TODO: Добавить инфу для первого графика
+        time_counts = {}
+        for log in logs:
+            tbfs_date = log[8]  # tbfs_since
+            updated_date = log[7]  # updated
+            
+            # Generate all dates between tbfs_since and updated
+            current_date = tbfs_date
+            while current_date <= updated_date:
+                date_key = current_date.strftime("%Y-%m-%d")
+                time_counts[date_key] = time_counts.get(date_key, 0) + 1
+                current_date += timedelta(days=1)
+
+        graphs = [{"time": time, "count": count} for time, count in time_counts.items()]
+        graphs.sort(key=lambda x: x["time"])  # Sort by time
         return {
             'count_logs': count_logs,
-            'graphs': []
+            'graphs': graphs
         }
 
     def get_graphs_period(self, startDate, endDate):
-        pass
+        self.cursor.execute("""SELECT * FROM logs WHERE tbfs_since BETWEEN %s AND %s""", (startDate, endDate))
+        logs = self.cursor.fetchall()
+        count_logs = len(logs)
+        time_counts = {}
+        for log in logs:
+            tbfs_date = log[8]  # tbfs_since
+            updated_date = log[7]  # updated
+            
+            # Generate all dates between tbfs_since and updated
+            current_date = tbfs_date
+            while current_date <= updated_date:
+                date_key = current_date.strftime("%Y-%m-%d")    
+                time_counts[date_key] = time_counts.get(date_key, 0) + 1
+                current_date += timedelta(days=1)
+
+        graphs = [{"time": time, "count": count} for time, count in time_counts.items()]
+        graphs.sort(key=lambda x: x["time"])  # Sort by time
+        return {
+            'count_logs': count_logs,
+            'graphs': graphs
+        }
 
     def get_graphs_package(self, package):
-        pass
+        self.cursor.execute("""SELECT * FROM logs WHERE name = %s""", ( package,))
+        logs = self.cursor.fetchall()
+        count_logs = len(logs)
+        time_counts = {}
+        for log in logs:
+            tbfs_date = log[8]  # tbfs_since
+            updated_date = log[7]  # updated
+            
+            # Generate all dates between tbfs_since and updated
+            current_date = tbfs_date
+            while current_date <= updated_date:
+                date_key = current_date.strftime("%Y-%m-%d")
+                time_counts[date_key] = time_counts.get(date_key, 0) + 1
+                current_date += timedelta(days=1)
+
+        graphs = [{"time": time, "count": count} for time, count in time_counts.items()]
+        graphs.sort(key=lambda x: x["time"])  # Sort by time
+        return {
+            'count_logs': count_logs,
+            'graphs': graphs
+        }
 
     def get_graphs_package_period(self, package, startDate, endDate):
-        pass
+        self.cursor.execute("""SELECT * FROM logs WHERE name = %s AND tbfs_since BETWEEN %s AND %s""", (package, startDate, endDate))
+        logs = self.cursor.fetchall()
+        count_logs = len(logs)
+        time_counts = {}
+        for log in logs:
+            tbfs_date = log[8]  # tbfs_since
+            updated_date = log[7]  # updated
+            
+            # Generate all dates between tbfs_since and updated
+            current_date = tbfs_date
+            while current_date <= updated_date:
+                date_key = current_date.strftime("%Y-%m-%d")        
+                time_counts[date_key] = time_counts.get(date_key, 0) + 1
+                current_date += timedelta(days=1)
+
+        graphs = [{"time": time, "count": count} for time, count in time_counts.items()]
+        graphs.sort(key=lambda x: x["time"])  # Sort by time
+        return {
+            'count_logs': count_logs,
+            'graphs': graphs
+        }
 
 dbase = Dbase()
 
@@ -102,7 +177,3 @@ def parse_logs(adres: str):
         print(f"Error with request: {str(e)}")
 
 
-
-if __name__ == '__main__':
-    parse_logs(URL_PARSE_LOGS)
-    pprint(dbase.get_logs())
