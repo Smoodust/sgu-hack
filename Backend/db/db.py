@@ -6,8 +6,7 @@ from pprint import pprint
 import requests
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-from config import *
-from main import URL_PARSE_LOGS
+from .config import URL_PARSE_LOGS, user, password, host, port, database
 
 class Dbase:
     def __init__(self):
@@ -37,10 +36,26 @@ class Dbase:
         self.cursor.execute("""DELETE FROM logs""")
         self.connection.commit()
 
+    def get_log(self, id):
+        self.cursor.execute("""SELECT * FROM logs WHERE id = %s""", (id,))
+        return self.cursor.fetchone()
+
+    def get_graphs(self):
+        pass
+
+    def get_graphs_period(self, startDate, endDate):
+        pass
+
+    def get_graphs_package(self, package):
+        pass
+
+    def get_graphs_package_period(self, package, startDate, endDate):
+        pass
+
+dbase = Dbase()
 
 def get_db():
-    db = Dbase()
-    return db
+    return dbase
 
 
 # парсинг логов из внешнего источника
@@ -59,6 +74,5 @@ def parse_logs(adres: str):
 
 
 if __name__ == '__main__':
-    dbase = Dbase()
     parse_logs(URL_PARSE_LOGS)
     pprint(dbase.gets_logs())

@@ -1,0 +1,11 @@
+CREATE TABLE logs (
+    id SERIAL PRIMARY KEY,
+    branch VARCHAR(255) NOT NULL,
+    arch VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    hash VARCHAR(255) NOT NULL,
+    version VARCHAR(100) NOT NULL,
+    url TEXT NOT NULL,
+    updated TIMESTAMP NOT NULL,
+    tbfs_since TIMESTAMP NOT NULL
+);

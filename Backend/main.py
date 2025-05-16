@@ -1,19 +1,11 @@
-from datetime import datetime
-from typing import Annotated
-
 import requests
+import uvicorn
 from apscheduler.schedulers.background import BackgroundScheduler
-from fastapi import BackgroundTasks, FastAPI, File, HTTPException
-
-from prometheus_fastapi_instrumentator import Instrumentator
-
-import numpy as np
-import pandas as pd
-import random
-
-from starlette.responses import JSONResponse
-from db.db import *
-
+from fastapi import FastAPI, HTTPException
+from datetime import datetime
+from db.db import parse_logs
+from db.config import URL_PARSE_LOGS
+from handlers.swaggerDis import custom_openapi
 from handlers.handlers import router
 
 URL_PARSE_LOGS = 'https://rdb.altlinux.org/api/export/beehive/ftbfs?branch=sisyphus&arch=x86_64'
@@ -38,17 +30,13 @@ URL_PARSE_LOGS = 'https://rdb.altlinux.org/api/export/beehive/ftbfs?branch=sisyp
 
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(parse_logs(URL_PARSE_LOGS), 'cron', hour=5, minute=0)  # Запуск каждый день в 05:00
+scheduler.add_job(parse_logs, 'cron', args=[URL_PARSE_LOGS], hour=5, minute=0)  # Запуск каждый день в 05:00
 scheduler.start()
 
 
 
-app = FastAPI(
-    title="SGU Hackathon 2025",
-    description="API для системы мониторинга и анализа логов",
-    version="1.0.0"
-)
-
+app = FastAPI()
+app.openapi = lambda: custom_openapi(app)
 
 app.include_router(router)
 
