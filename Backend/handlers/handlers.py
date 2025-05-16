@@ -1,3 +1,8 @@
+from fastapi import APIRouter
+
+router = APIRouter()
+
+
 ## Хандлер для динаическрй подгрузки логов
 
 ## Хандлер для лога по ID
