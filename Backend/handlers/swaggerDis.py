@@ -256,6 +256,51 @@ def custom_openapi(app: FastAPI):
                     }
                 }
             }
+        },
+        "/logs/analyze/{id}": {
+            "get": {
+                "summary": "Анализ лога",
+                "description": "Анализирует лог с помощью AI и возвращает подозрительные строки",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": True,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Идентификатор лога для анализа"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "type": "object",
+                                            "description": "Результат анализа лога"
+                                        },
+                                        "log": {
+                                            "type": "string",
+                                            "description": "Содержимое лога"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Лог не найден"
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера"
+                    }
+                }
+            }
         }
     }
 

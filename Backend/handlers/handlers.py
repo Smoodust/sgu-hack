@@ -1,6 +1,10 @@
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 from db.db import *
+from AI.ai import *
+import json
+import requests
+from datetime import datetime
 
 router = APIRouter()
 
@@ -9,7 +13,11 @@ router = APIRouter()
 @router.get("/logs")
 async def get_logs():
     try:
-        return JSONResponse(content={"logs":dbase.get_logs()}, status_code=200)
+        logs = dbase.get_logs()
+        for log in logs:
+            log['updated'] = log['updated'].strftime("%Y-%m-%d %H:%M:%S")
+            log['tbfs_since'] = log['tbfs_since'].strftime("%Y-%m-%d %H:%M:%S") 
+        return JSONResponse(content={"logs":logs}, status_code=200)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -17,7 +25,10 @@ async def get_logs():
 @router.get("/logs/{id}")
 async def get_log(id: str):
     try:
-        return JSONResponse(content={"log":dbase.get_log(id)}, status_code=200)
+        log = dbase.get_log(id) 
+        log['updated'] = log['updated'].strftime("%Y-%m-%d %H:%M:%S")
+        log['tbfs_since'] = log['tbfs_since'].strftime("%Y-%m-%d %H:%M:%S")
+        return JSONResponse(content={"log":log}, status_code=200)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -25,7 +36,8 @@ async def get_log(id: str):
 @router.get("/graphs")
 async def get_graphs():
     try:
-        return JSONResponse(content={"graphs":dbase.get_graphs()}, status_code=200)
+        graphs = dbase.get_graphs()
+        return JSONResponse(content={"graphs":graphs['graphs'], "count_logs":graphs['count_logs']}, status_code=200)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -55,5 +67,22 @@ async def get_graphs_package_period(body: dict):
         startDate = datetime.strptime(body["startDate"], "%Y-%m-%d:%H:%M:%S")
         endDate = datetime.strptime(body["endDate"], "%Y-%m-%d:%H:%M:%S")
         return JSONResponse(content={"graphs":dbase.get_graphs_package_period(package=package, startDate=startDate, endDate=endDate)}, status_code=200)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+## Хандлер который анализирует лог и возвращает результат
+@router.get("/logs/analyze/{id}")
+async def analyze_log(id: str):
+    try:
+        # TODO: Добавить AI Кирилла, которая возвращает подозрительные строки в логе
+        log_struct = dbase.get_log(id)
+        if log_struct:
+            log_url = log_struct['url']
+            log = requests.get(log_url).text
+            result = ai_parse(log)
+            print(result)
+            return JSONResponse(content={"result":result, "log": log}, status_code=200)
+        else:
+            return JSONResponse(content={"result":"Log not found"}, status_code=404)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
