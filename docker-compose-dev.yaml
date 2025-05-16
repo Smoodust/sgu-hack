@@ -79,7 +79,7 @@ services:
 #################### BACKEND #################### 
   ml_dev:
     build: 
-      context: ./app
+      context: ./ML_backend/app
       dockerfile: Dockerfile.dev
       target: development
     container_name: ml_dev

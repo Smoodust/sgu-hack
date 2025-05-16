@@ -176,3 +176,4 @@ cython_debug/
 ./app/tmp/log/recommendations.log
 ./app/tmp/log/drift.log
 grafana/provisioning/alerting/contact-points.yaml
+./ML_backend/app/models/logs_classifier.bin

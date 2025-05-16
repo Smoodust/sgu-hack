@@ -172,3 +172,4 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+ML_backend/app/models/logs_classifier.bin
