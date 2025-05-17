@@ -196,6 +196,21 @@ class Dbase:
         clusters = self.cursor.fetchall()
         return clusters
     
+    def get_logs_period(self, startDate, endDate):
+        self.cursor.execute("""SELECT * FROM logs WHERE tbfs_since BETWEEN %s AND %s""", (startDate, endDate))
+        logs = self.cursor.fetchall()
+        return logs
+    
+    def get_logs_package(self, package):
+        self.cursor.execute("""SELECT * FROM logs WHERE name = %s""", (package,))
+        logs = self.cursor.fetchall()
+        return logs
+
+    def get_logs_package_period(self, package, startDate, endDate):
+        self.cursor.execute("""SELECT * FROM logs WHERE name = %s AND tbfs_since BETWEEN %s AND %s""", (package, startDate, endDate))
+        logs = self.cursor.fetchall()
+        return logs
+    
 dbase = Dbase()
 
 def get_db():

@@ -65,7 +65,7 @@ async def get_graphs_period(period: dict):
         endDate = datetime.strptime(period["endDate"], "%Y-%m-%d:%H:%M:%S")
         graphs = dbase.get_graphs_period(startDate=startDate, endDate=endDate)
         graphs_cluster_array = []
-        logs = dbase.get_logs()
+        logs = dbase.get_logs_period(startDate, endDate)
         limit = 20
         for log in logs:
             graphs_cluster = dbase.get_graphs_cluster_period(log['id'], startDate, endDate)
@@ -90,7 +90,7 @@ async def get_graphs_package(package: str):
     try:
         graphs = dbase.get_graphs_package(package)
         graphs_cluster_array = []
-        logs = dbase.get_logs()
+        logs = dbase.get_logs_package(package)
         limit = 20
         for log in logs:
             graphs_cluster = dbase.get_graphs_cluster_package(log['id'], package)
@@ -118,7 +118,7 @@ async def get_graphs_package_period(body: dict):
         endDate = datetime.strptime(body["endDate"], "%Y-%m-%d:%H:%M:%S")
         graphs = dbase.get_graphs_package_period(package=package, startDate=startDate, endDate=endDate)
         graphs_cluster_array = []
-        logs = dbase.get_logs()
+        logs = dbase.get_logs_package_period(package, startDate, endDate)
         limit = 20
         for log in logs:
             graphs_cluster = dbase.get_graphs_cluster_package_period(log['id'], package, startDate, endDate)
