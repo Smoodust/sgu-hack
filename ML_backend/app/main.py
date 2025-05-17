@@ -63,10 +63,10 @@ def predict_logs_cordinate(
 
 
 @app.get(
-        "/predict_sus_lines", 
-        status_code=200,
-        response_model=SuspiciousLineResponse,
-        summary="Отдает подозрительные строчки"
+    "/predict_sus_lines", 
+    status_code=200,
+    response_model=SuspiciousLineResponse,
+    summary="Отдает подозрительные строчки"
 )
 def predict_sus_lines(
     log_url: str = Query(
@@ -115,17 +115,12 @@ def predict_sus_lines(
     }
 
 @app.post(
-        "/check_alert/sus_lines", 
-        status_code=200,
-        summary="Проверка алертов Grafana для детекции подозрительных строк"
+    "/check_alert/sus_lines", 
+    status_code=200,
+    summary="Проверка алертов Grafana для детекции подозрительных строк"
 )
 def check_alert():
     SUS_DRIFT_SCORE.set(0.2)
     return {
         "OH, NO!!!! AMOGUS~~~"
     }
-
-
-@app.get("/train")
-def retrain_model():
-    pass
