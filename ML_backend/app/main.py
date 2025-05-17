@@ -4,14 +4,12 @@ import requests
 
 from prometheus_fastapi_instrumentator import Instrumentator
 
-import numpy as np
 import random
 
 import fasttext
 
-from monitoring_app import metrics_app, calculate_drift, DRIFT_SCORE
+from monitoring_app import metrics_app, calculate_sus_lines_drift, SUS_DRIFT_SCORE
 from models import SuspiciousLineResponse
-
 
 app = FastAPI(
     title="ML Log Analysis API",
@@ -74,30 +72,22 @@ def predict_sus_lines(
             continue 
 
     predictions.sort(key=lambda x: x[1], reverse=True)
+    calculate_sus_lines_drift(predictions)
     top_sus_lines = [line for line, _ in predictions[:top_k]]
     
     return {
         "result": top_sus_lines
     }
 
-
-@app.get(
-        "/check_drift", 
-        status_code=200,
-        summary="Проверка модели на дрифт"
-)
-def check_drift():
-    pass
-
 @app.post(
-        "/check_alert", 
+        "/check_alert/sus_lines", 
         status_code=200,
-        summary="Проверка алертов Grafana"
+        summary="Проверка алертов Grafana для детекции подозрительных строк"
 )
 def check_alert():
-    DRIFT_SCORE.set(1)
+    SUS_DRIFT_SCORE.set(1)
     return {
-        "OH, NO!!!! IT'S DRIFTING~~~"
+        "OH, NO!!!! AMOGUS~~~"
     }
 
 

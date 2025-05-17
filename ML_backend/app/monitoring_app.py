@@ -1,23 +1,21 @@
 from prometheus_client import make_asgi_app, Gauge
-
-import numpy as np
-import pandas as pd
+from typing import List, Tuple, Dict
 
 metrics_app = make_asgi_app()
-DRIFT_SCORE = Gauge("drift_score", "Средний дрейф по магазинам")
+SUS_DRIFT_SCORE = Gauge("drift_score", "Дрейф модели, детектирующей строки")
 
-current_df = pd.read_parquet("./features.parquet")
 
-def calculate_drift(
-        df: pd.DataFrame
-):
-    numeric_cols = current_df.select_dtypes(include=[np.number]).columns
-    current_mean = current_df[numeric_cols].mean(axis=0)
-    new_mean = df.mean(axis=0)
-    drift = np.abs(current_mean - new_mean).mean()
-
-    DRIFT_SCORE.set(drift)
+def calculate_sus_lines_drift(preds: List[Tuple[str, float]]) -> Dict[str, Tuple[str, float]]:
+    if not preds:
+        raise ValueError("Input predictions list cannot be empty")
+    
+    if not all(isinstance(item, tuple) and len(item) == 2 for item in preds):
+        raise ValueError("All prediction items must be tuples of (str, float)")
+    
+    most_suspicious = max(preds, key=lambda x: x[1])
+    
+    SUS_DRIFT_SCORE.set(most_suspicious[1])
     
     return {
-        "drift": drift
+        "drift": most_suspicious
     }
