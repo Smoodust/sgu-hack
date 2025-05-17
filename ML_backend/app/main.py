@@ -10,6 +10,7 @@ import random
 import fasttext
 
 from monitoring_app import metrics_app, calculate_drift, DRIFT_SCORE
+from models import SuspiciousLineResponse
 
 
 app = FastAPI(
@@ -25,12 +26,13 @@ app = FastAPI(
 app.mount("/metrics", metrics_app)
 Instrumentator().instrument(app).expose(app)
 
-classifier_model = fasttext.load_model("./app/models/logs_classifier.bin")
+classifier_model = fasttext.load_model("./models/logs_classifier.bin")
 
 
 @app.get(
         "/predict_sus_lines", 
         status_code=200,
+        response_model=SuspiciousLineResponse,
         summary="Отдает подозрительные строчки"
 )
 def predict_sus_lines(
@@ -45,7 +47,7 @@ def predict_sus_lines(
         example=5,
         description="Количество отдаваемых строчек"
     )
-) -> List[str]:
+) -> SuspiciousLineResponse:
     global classifier_model
     if classifier_model is None:
         raise HTTPException(status_code=404, detail="No models found")
@@ -72,9 +74,11 @@ def predict_sus_lines(
             continue 
 
     predictions.sort(key=lambda x: x[1], reverse=True)
-    top_sus_lines = [line for line, prob in predictions[:top_k]]
+    top_sus_lines = [line for line, _ in predictions[:top_k]]
     
-    return top_sus_lines
+    return {
+        "result": top_sus_lines
+    }
 
 
 @app.get(

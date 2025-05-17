@@ -86,7 +86,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./app:/app
+      - ./ML_backend/app:/app
       - ~/.cache/pypoetry:/root/.cache/pypoetry 
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
