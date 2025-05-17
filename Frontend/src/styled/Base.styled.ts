@@ -17,6 +17,6 @@ const Subtitle = styled.h2`
   text-align: center;
   font-family: Montserrat !important;
   margin: 0 0 10px 0;
-`
+`;
 
 export { Frame, Title, Subtitle };

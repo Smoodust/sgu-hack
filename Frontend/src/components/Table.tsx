@@ -8,7 +8,7 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 
 const TableElement = observer(() => {
-  const [tableData, setTableData] = useState<ITable[]>([]);
+  const [tableData, setTableData] = useState<any[]>([]);
   useEffect(() => {
     API.getTable()
       .then((res) => {
@@ -64,17 +64,25 @@ const TableElement = observer(() => {
           },
         }}
         checkboxSelection={false}
-        rows={tableData}
-          onRowClick={(params) => {
-                ModalStore.setModuleData('name', params.row.name);
-                ModalStore.setModuleData('date', params.row.date);
-                ModalStore.setModuleData('category', params.row.category);
-                ModalStore.setOpen(true);
-              }}
+        rows={tableData.map((res: any) => {
+          let t: any = {};
+          t['updated'] = res['updated'];
+          t['name'] = res['name'];
+          t['id'] = res['id'];
+          t['version'] = res['version'];
+          return t;
+        })}
+        onRowClick={(params) => {
+          ModalStore.setModuleData('id', params.row.id);
+          ModalStore.setModuleData('version', params.row.version);
+          ModalStore.setModuleData('name', params.row.name);
+
+          ModalStore.setOpen(true);
+        }}
         columns={[
-          { field: 'date', headerName: 'Дата', flex: 1 },
-          { field: 'name', headerName: 'Пакет', flex: 1 },
-          { field: 'category', headerName: 'Категория', flex: 1 },
+          { field: 'updated', headerName: 'Date', flex: 1 },
+          { field: 'name', headerName: 'Name', flex: 1 },
+          { field: 'version', headerName: 'Version', flex: 1 },
         ]}
         initialState={{ pagination: { paginationModel } }}
         pageSizeOptions={[5, 10]}

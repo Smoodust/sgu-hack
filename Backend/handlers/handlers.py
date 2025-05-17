@@ -136,7 +136,7 @@ async def analyze_log(id: str):
             result = ai_parse(log)
 
             print(result)
-            return JSONResponse(content={"result":result, "log": log, "badLines": info_for_bad_lines}, status_code=200)
+            return JSONResponse(content={"result":result, "log_url": log_url, "badLines": info_for_bad_lines}, status_code=200)
         else:
             return JSONResponse(content={"result":"Log not found"}, status_code=404)
     except Exception as e:

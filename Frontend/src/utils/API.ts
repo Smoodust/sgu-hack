@@ -1,22 +1,21 @@
+import ModalStore from '../stores/Modal.store';
 import { ICountLogs } from './Interfaces/ICountLogs';
 import { IGauge } from './Interfaces/IGauge';
 import { ITable } from './Interfaces/ITable';
 import axios from 'axios';
 class API {
-  private host: string = 'https://7398ca594e34de39.mokky.dev';
-  private getTableLogsWay: string = '/table';
-  private getCountLogsWay: string = '/logs';
-  private getGaugeWay: string = '/gauge';
-  private getModalWay: string = '/modal';
-  async getTable(): Promise<ITable[]> {
+  private host: string = 'http://localhost:8001';
+  private getTableLogsWay: string = '/logs';
+  private getCountLogsWay: string = '/graphs';
+  private getGaugeWay: string = '/graphs';
+  private getModalWay: string = '/logs/analyze/';
+  async getTable(): Promise<any[]> {
     try {
       const res = await axios.get(this.host + this.getTableLogsWay);
       if (res) {
-        return res.data.map((el: any, i: number) => {
-          el['id'] = i;
-          return el;
-        });
+        return res.data['logs'];
       }
+
       return [];
     } catch (error) {
       return [];
@@ -27,28 +26,30 @@ class API {
     try {
       const res = await axios.get(this.host + this.getCountLogsWay);
 
-      if (res) return res.data;
+      if (res) return res.data['graphs'];
       return [];
     } catch (error) {
       return [];
     }
   }
-  async getGauge(): Promise<IGauge> {
+  async getGauge(): Promise<any> {
     try {
       const res = await axios.get(this.host + this.getGaugeWay);
 
-      if (res) return res.data[0];
-      return { success: 0, failed: 100 };
+      if (res) return res.data['count_logs'];
+      return { count_logs: 0 };
     } catch (error) {
-      return { success: 0, failed: 100 };
+      return { count_logs: 0 };
     }
   }
   async getModalData(): Promise<any> {
     try {
-      const res = await axios.get(this.host + this.getModalWay);
+      const res = await axios.get(
+        this.host + this.getModalWay + ModalStore.getModuleData()['id']
+      );
 
       if (res) {
-        return res.data[0];
+        return res.data;
       }
       return {};
     } catch (error) {
