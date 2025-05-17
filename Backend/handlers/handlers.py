@@ -44,7 +44,7 @@ async def get_graphs():
             if graphs_cluster:
                 graphs_cluster_array += [graphs_cluster[1],graphs_cluster[2], graphs_cluster[3], graphs_cluster[4]]
             else:
-                request_info = requests.get(f"http://ml_backend:8000/predict_logs_cordinate?log_url={log['url']}")   
+                request_info = requests.get(f"http://ml_dev:8000/predict_logs_cordinate?log_url={log['url']}")   
                 request_info = request_info.json()
                 graphs_cluster_array += [request_info['x'], request_info['y'], request_info['cluster']]
                 dbase.new_cluster(log['id'], request_info['x'], request_info['y'], request_info['cluster'])
@@ -67,7 +67,7 @@ async def get_graphs_period(period: dict):
             if graphs_cluster:
                 graphs_cluster_array += [graphs_cluster[1],graphs_cluster[2], graphs_cluster[3], graphs_cluster[4]]
             else:
-                request_info = requests.get(f"http://ml_backend:8000/predict_logs_cordinate?log_url={log['url']}")   
+                request_info = requests.get(f"http://ml_dev:8000/predict_logs_cordinate?log_url={log['url']}")   
                 request_info = request_info.json()
                 graphs_cluster_array += [request_info['x'], request_info['y'], request_info['cluster']]
                 dbase.new_cluster(log['id'], request_info['x'], request_info['y'], request_info['cluster'])
@@ -88,7 +88,7 @@ async def get_graphs_package(package: str):
             if graphs_cluster:
                 graphs_cluster_array += [graphs_cluster[1],graphs_cluster[2], graphs_cluster[3], graphs_cluster[4]]
             else:
-                request_info = requests.get(f"http://ml_backend:8000/predict_logs_cordinate?log_url={log['url']}")   
+                request_info = requests.get(f"http://ml_dev:8000/predict_logs_cordinate?log_url={log['url']}")   
                 request_info = request_info.json()
                 graphs_cluster_array += [request_info['x'], request_info['y'], request_info['cluster']]
                 dbase.new_cluster(log['id'], request_info['x'], request_info['y'], request_info['cluster'])
@@ -112,7 +112,7 @@ async def get_graphs_package_period(body: dict):
             if graphs_cluster:
                 graphs_cluster_array += [graphs_cluster[1],graphs_cluster[2], graphs_cluster[3], graphs_cluster[4]]
             else:
-                request_info = requests.get(f"http://ml_backend:8000/predict_logs_cordinate?log_url={log['url']}")   
+                request_info = requests.get(f"http://ml_dev:8000/predict_logs_cordinate?log_url={log['url']}")   
                 request_info = request_info.json()
                 graphs_cluster_array += [request_info['x'], request_info['y'], request_info['cluster']]
                 dbase.new_cluster(log['id'], request_info['x'], request_info['y'], request_info['cluster'])
@@ -131,7 +131,7 @@ async def analyze_log(id: str):
         if log_struct:
             log_url = log_struct['url']
             log = requests.get(log_url).text
-            info_for_bad_lines = requests.get(f"http://ml_backend:8000/predict_sus_lines?log_url={log_url}&top_k=5")
+            info_for_bad_lines = requests.get(f"http://ml_dev:8000/predict_sus_lines?log_url={log_url}&top_k=5")
             info_for_bad_lines = info_for_bad_lines.json()['result']
             result = ai_parse(log)
 
