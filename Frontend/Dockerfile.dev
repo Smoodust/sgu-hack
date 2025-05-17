@@ -1,20 +1,15 @@
-# Используем базовый образ Node.js
 FROM node:18-alpine
 
-# Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Копируем package.json и package-lock.json
+# Копируем только package файлы
 COPY package.json package-lock.json ./
 
-# Устанавливаем зависимости (включая react-scripts)
-RUN npm install --frozen-lockfile
+# Устанавливаем зависимости
+RUN npm install
 
-# Копируем остальные файлы проекта
+# Копируем остальные файлы (кроме node_modules)
 COPY . .
 
-# Указываем порт (опционально)
 ENV PORT=3000
-
-# Запускаем приложение
 CMD ["npm", "start"]
