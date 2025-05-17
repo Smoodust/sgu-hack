@@ -127,7 +127,7 @@ services:
   backend-dev:
     build: 
       context: ./Backend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
       target: development
     container_name: backend-dev
     environment:
