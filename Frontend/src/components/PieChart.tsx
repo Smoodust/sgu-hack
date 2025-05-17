@@ -20,7 +20,7 @@ const PieChartComponent = () => {
     <PieChartElement>
       <Subtitle>Error logs counts</Subtitle>
       <Gauge
-      height={400}
+      height={440}
         sx={{
           backgroundColor: '#1F1F1F',
           '& .MuiGauge-referenceArc': {

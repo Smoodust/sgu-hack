@@ -7,6 +7,7 @@ import { useState } from 'react';
 import ModalComponent from '../components/Modal';
 import ModalStore from '../stores/Modal.store';
 import { observer } from 'mobx-react-lite';
+import Scatter from '../components/Scatter';
 
 const Mean = observer(() => {
   const [theme, setTheme] = useState<string>('black');
@@ -15,11 +16,14 @@ const Mean = observer(() => {
       {ModalStore.getOpen() ? <ModalComponent /> : ''}
       <Title>Name Error</Title>
       <Grid container spacing={2}>
-        <Grid size={6} height={1/2}>
+        <Grid size={4} height={1/2}>
           <LineChartComponent />
         </Grid>
-        <Grid size={6} height={1/2}>
+        <Grid size={4} height={1/2}>
           <PieChartComponent />
+        </Grid>
+          <Grid size={4} height={1/2}>
+          <Scatter />
         </Grid>
         <Grid size={12}>
           <TableElement />
