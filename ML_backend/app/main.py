@@ -39,10 +39,10 @@ def fetch_log_content(log_url: str) -> str:
     return log_text
 
 @app.get(
-        "/predict_logs_cordinate", 
-        status_code=200,
-        response_model=CordinateResponse,
-        summary="Отдает кординаты для лога"
+    "/predict_logs_cordinate", 
+    status_code=200,
+    response_model=CordinateResponse,
+    summary="Отдает кординаты для лога"
 )
 def predict_logs_cordinate(
     log_url: str = Query(
@@ -51,7 +51,7 @@ def predict_logs_cordinate(
     )
 ) -> CordinateResponse:
     global logs_embedder, kmean
-    if classifier_model is None or kmean is None:
+    if logs_embedder is None or kmean is None:
         raise HTTPException(status_code=404, detail="No models found")
     
     log = fetch_log_content(log_url)
