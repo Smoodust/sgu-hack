@@ -56,6 +56,46 @@ def ai_parse(log):
 
 
 
+def errors_description(logs):
+    prompt = f"""
+    ###### System Instructions ######
+You are a senior Linux packaging specialist with expertise in:
+- All package formats
+- Cross-distro packaging issues
+- Build systems
+- Dependency resolution across ecosystems
 
+###### Log ######
+{logs}
+
+###### Instruction ######
+You should find meaning of clusters. So you should result in json where key is cluster id and value is string of main error reason for this cluster. Write answer using this json format:
+{{
+    <cluster_id. Should be integer>: "<String where you describe main reason of build failure for logs in this cluster.>"
+}}
+    """
+
+    api_key = "v0Qf8IQ33v2JFWUbsO5P8QoBzoCFk3t3"
+    model = "mistral-large-latest"
+    client = Mistral(api_key=api_key)
+    chat_response = client.chat.complete(
+        model = model,
+        messages = [
+            {
+                "role": "user",
+                "content": prompt,
+            },
+        ]
+    )
+    s = chat_response.choices[0].message.content
+    s = s.replace("```json", "").replace("```", "")
+    s = s[next(idx for idx, c in enumerate(s) if c in "{[") :]
+    try:
+        return json.loads(s)
+    except json.JSONDecodeError as e:
+        try:
+            return json.loads(s[: e.pos])
+        except Exception as e:
+            raise e
 
 

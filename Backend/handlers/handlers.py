@@ -157,3 +157,19 @@ async def analyze_log(id: str):
             return JSONResponse(content={"result":"Log not found"}, status_code=404)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+
+# Хандлер для дескрипции кластера
+@router.post("/clusters/description")
+async def get_cluster_description(body: dict):
+    try:
+        ## Хэш таблица с ключом - id кластера и значением - лог
+        cluster_dict = body["cluster_dict"]
+        logs = ""
+        for cluster_id, log in cluster_dict.items():
+            logs += f'Log {cluster_id}: {log} \n'
+        ## Дескрипция ошибок в кластере
+        res = errors_description(logs)
+        return JSONResponse(content={"result":res}, status_code=200)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

@@ -18,7 +18,7 @@ def custom_openapi(app: FastAPI):
         "/logs": {
             "get": {
                 "summary": "Получить все логи",
-                "description": "Возвращает список всех доступных логов",
+                "description": "Возвращает список всех доступных логов с информацией о времени обновления и времени с последней ошибки",
                 "responses": {
                     "200": {
                         "description": "Успешный ответ",
@@ -33,6 +33,11 @@ def custom_openapi(app: FastAPI):
                                                 "type": "object",
                                                 "properties": {
                                                     "id": {"type": "string"},
+                                                    "branch": {"type": "string"},
+                                                    "arch": {"type": "string"},
+                                                    "name": {"type": "string"},
+                                                    "hash": {"type": "string"},
+                                                    "version": {"type": "string"},
                                                     "url": {"type": "string"},
                                                     "updated": {"type": "string", "format": "date-time"},
                                                     "tbfs_since": {"type": "string", "format": "date-time"}
@@ -53,7 +58,7 @@ def custom_openapi(app: FastAPI):
         "/logs/{id}": {
             "get": {
                 "summary": "Получить лог по ID",
-                "description": "Возвращает конкретный лог по его идентификатору",
+                "description": "Возвращает конкретный лог по его идентификатору с полной информацией",
                 "parameters": [
                     {
                         "name": "id",
@@ -77,6 +82,11 @@ def custom_openapi(app: FastAPI):
                                             "type": "object",
                                             "properties": {
                                                 "id": {"type": "string"},
+                                                "branch": {"type": "string"},
+                                                "arch": {"type": "string"},
+                                                "name": {"type": "string"},
+                                                "hash": {"type": "string"},
+                                                "version": {"type": "string"},
                                                 "url": {"type": "string"},
                                                 "updated": {"type": "string", "format": "date-time"},
                                                 "tbfs_since": {"type": "string", "format": "date-time"}
@@ -108,7 +118,11 @@ def custom_openapi(app: FastAPI):
                                         "graphs": {
                                             "type": "array",
                                             "items": {
-                                                "type": "object"
+                                                "type": "object",
+                                                "properties": {
+                                                    "time": {"type": "string", "format": "date"},
+                                                    "count": {"type": "integer"}
+                                                }
                                             },
                                             "description": "Данные для построения графиков"
                                         },
@@ -172,7 +186,11 @@ def custom_openapi(app: FastAPI):
                                         "graphs": {
                                             "type": "array",
                                             "items": {
-                                                "type": "object"
+                                                "type": "object",
+                                                "properties": {
+                                                    "time": {"type": "string", "format": "date"},
+                                                    "count": {"type": "integer"}
+                                                }
                                             }
                                         },
                                         "count_logs": {
@@ -221,7 +239,11 @@ def custom_openapi(app: FastAPI):
                                         "graphs": {
                                             "type": "array",
                                             "items": {
-                                                "type": "object"
+                                                "type": "object",
+                                                "properties": {
+                                                    "time": {"type": "string", "format": "date"},
+                                                    "count": {"type": "integer"}
+                                                }
                                             }
                                         },
                                         "count_logs": {
@@ -286,11 +308,21 @@ def custom_openapi(app: FastAPI):
                                         "graphs": {
                                             "type": "array",
                                             "items": {
-                                                "type": "object"
+                                                "type": "object",
+                                                "properties": {
+                                                    "time": {"type": "string", "format": "date"},
+                                                    "count": {"type": "integer"}
+                                                }
                                             }
                                         },
                                         "count_logs": {
                                             "type": "integer"
+                                        },
+                                        "graphs_cluster": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
                                         }
                                     }
                                 }
@@ -330,9 +362,9 @@ def custom_openapi(app: FastAPI):
                                             "type": "object",
                                             "description": "Результат анализа лога"
                                         },
-                                        "log": {
+                                        "log_url": {
                                             "type": "string",
-                                            "description": "Содержимое лога"
+                                            "description": "URL лога"
                                         },
                                         "badLines": {
                                             "type": "array",
@@ -348,6 +380,50 @@ def custom_openapi(app: FastAPI):
                     },
                     "404": {
                         "description": "Лог не найден"
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера"
+                    }
+                }
+            }
+        },
+        "/clusters/description": {
+            "post": {
+                "summary": "Получить описание кластеров",
+                "description": "Возвращает описание ошибок для указанных кластеров",
+                "requestBody": {
+                    "required": True,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "cluster_dict": {
+                                        "type": "object",
+                                        "description": "Словарь с ID кластеров и их логами"
+                                    }
+                                },
+                                "required": ["cluster_dict"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "type": "string",
+                                            "description": "Описание ошибок в кластерах"
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     },
                     "500": {
                         "description": "Внутренняя ошибка сервера"

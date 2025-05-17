@@ -26,7 +26,7 @@ class BertLikeONNX:
                 "attention_mask": np.expand_dims(np.array(output.attention_mask), axis=0).astype("int64")
             }
         )[0][0]
-        return (preds+random.choice(kmean.centers))/2
+        return preds
 
 
 logs_embedder = BertLikeONNX("NN_models/embedder.onnx")
