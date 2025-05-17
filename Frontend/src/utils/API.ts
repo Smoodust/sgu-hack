@@ -15,33 +15,42 @@ class API {
       if (res) {
         return res.data['logs'];
       }
-
+// "graphs_cluster": [
+//         [
+//             115,
+//             1,
+//             -0.29621775455421445,
+//             0.20471753199554443,
+//             19
+//         ],
+//         [
+//             135,
+//             1,
+//             -0.11339883955421448,
+//             -0.8978462430044556,
+//             15
+//         ],
       return [];
     } catch (error) {
       return [];
     }
   }
 
-  async getCountLogs(): Promise<ICountLogs[]> {
+  async getCountLogs(): Promise<any> {
     try {
       const res = await axios.get(this.host + this.getCountLogsWay);
 
-      if (res) return res.data['graphs'];
+      if (res){ 
+        ModalStore.setPieC(res.data['count_logs'])
+           ModalStore.setScatterC(res.data['graphs_cluster'].map((item: any) => ({ x: item[0], y: item[1], id: item[4] })))
+        return res.data['graphs'];
+      }
       return [];
     } catch (error) {
       return [];
     }
   }
-  async getGauge(): Promise<any> {
-    try {
-      const res = await axios.get(this.host + this.getGaugeWay);
 
-      if (res) return res.data['count_logs'];
-      return { count_logs: 0 };
-    } catch (error) {
-      return { count_logs: 0 };
-    }
-  }
   async getModalData(): Promise<any> {
     try {
       const res = await axios.get(

@@ -5,17 +5,10 @@ import { useEffect, useState } from 'react';
 import API from '../utils/API';
 import { IGauge } from '../utils/Interfaces/IGauge';
 import { Loader, Subtitle } from '../styled/Base.styled';
+import ModalStore from '../stores/Modal.store';
 const PieChartComponent = () => {
-  const [gaugeData, setGaugeData] = useState<any>();
-  useEffect(() => {
-    API.getGauge()
-      .then((res) => {
-        setGaugeData(res);
-      })
-      .catch((res) => {
-        setGaugeData(res);
-      });
-  }, []);
+  const [gaugeData, setGaugeData] = useState<any>(ModalStore.getPieC());
+
   return (
     <PieChartElement>
       <Subtitle>Error logs counts</Subtitle>
