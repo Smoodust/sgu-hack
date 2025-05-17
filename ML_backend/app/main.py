@@ -22,7 +22,7 @@ app = FastAPI(
 app.mount("/metrics", metrics_app)
 Instrumentator().instrument(app).expose(app)
 
-classifier_model = fasttext.load_model("./models/logs_classifier.bin")
+classifier_model = fasttext.load_model("./NN_models/logs_classifier.bin")
 
 
 @app.get(

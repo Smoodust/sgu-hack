@@ -26,7 +26,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./ML_backend/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
     healthcheck:
       test: ["CMD-SHELL", "wget --spider http://localhost:9090/-/healthy || exit 1"]
@@ -44,11 +44,11 @@ services:
     ports:
       - "3000:3000"
     volumes:
-     # - ./grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
-     # - ./grafana/provisioning/dashboards/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml
-      #- ./grafana/provisioning/dashboards/ML_dashboard-1747323715280.json:/etc/grafana/provisioning/dashboards/ML_dashboard-1747323715280.json
-      #- ./grafana/provisioning/alerting/alert-rules.yaml:/etc/grafana/provisioning/alerting/alert-rules.yaml
-      #- ./grafana/provisioning/alerting/contact-points.yaml:/etc/grafana/provisioning/alerting/contact-points.yaml
+      - ./ML_backend/grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - ./ML_backend/grafana/provisioning/dashboards/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml
+      - ./ML_backend/grafana/provisioning/dashboards/ML_dashboard-1747323715280.json:/etc/grafana/provisioning/dashboards/ML_dashboard-1747323715280.json
+      - ./ML_backend/grafana/provisioning/alerting/alert-rules.yaml:/etc/grafana/provisioning/alerting/alert-rules.yaml
+      - ./ML_backend/grafana/provisioning/alerting/contact-points.yaml:/etc/grafana/provisioning/alerting/contact-points.yaml
       - grafana_data:/var/lib/grafana
     healthcheck:
       test: ["CMD-SHELL", "wget --spider http://localhost:3000/api/health || exit 1"]
@@ -150,7 +150,7 @@ services:
     volumes:
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./promtail-config.yml:/etc/promtail/config.yml
+      - ./ML_backend/promtail-config.yml:/etc/promtail/config.yml
     command: -config.file=/etc/promtail/config.yml
     healthcheck:
       test: ["CMD-SHELL", "wget --spider http://localhost:9080/ready || exit 1"]
@@ -175,8 +175,8 @@ services:
     ports:
       - "3001:3001"
     volumes:
-      - ./frontend:/app
-      - ./frontend/node_modules:/app/node_modules
+      - ./Frontend/frontend:/app
+      - ./Frontend/frontend/node_modules:/app/node_modules
 
 volumes:
   loki_data:
