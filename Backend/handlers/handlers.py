@@ -37,7 +37,19 @@ async def get_log(id: str):
 async def get_graphs():
     try:
         graphs = dbase.get_graphs()
-        return JSONResponse(content={"graphs":graphs['graphs'], "count_logs":graphs['count_logs']}, status_code=200)
+        graphs_cluster_array = []
+        logs = dbase.get_logs()
+        for log in logs:
+            graphs_cluster = dbase.get_graphs_cluster(log['id'])
+            if graphs_cluster:
+                graphs_cluster_array += [graphs_cluster[1],graphs_cluster[2], graphs_cluster[3], graphs_cluster[4]]
+            else:
+                request_info = requests.get(f"http://ml_backend:8000/predict_logs_cordinate?log_url={log['url']}")   
+                request_info = request_info.json()
+                graphs_cluster_array += [request_info['result']['Ox'], request_info['result']['Oy'], request_info['result']['Cluster_id']]
+                dbase.new_cluster(log['id'], request_info['result']['Ox'], request_info['result']['Oy'], request_info['result']['Cluster_id'])
+
+        return JSONResponse(content={"graphs":graphs['graphs'], "count_logs":graphs['count_logs'], "graphs_cluster":graphs_cluster_array}, status_code=200)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -48,7 +60,19 @@ async def get_graphs_period(period: dict):
         startDate = datetime.strptime(period["startDate"], "%Y-%m-%d:%H:%M:%S")
         endDate = datetime.strptime(period["endDate"], "%Y-%m-%d:%H:%M:%S")
         graphs = dbase.get_graphs_period(startDate=startDate, endDate=endDate)
-        return JSONResponse(content={"graphs":graphs['graphs'], "count_logs":graphs['count_logs']}, status_code=200)
+        graphs_cluster_array = []
+        logs = dbase.get_logs()
+        for log in logs:
+            graphs_cluster = dbase.get_graphs_cluster_period(log['id'], startDate, endDate)
+            if graphs_cluster:
+                graphs_cluster_array += [graphs_cluster[1],graphs_cluster[2], graphs_cluster[3], graphs_cluster[4]]
+            else:
+                request_info = requests.get(f"http://ml_backend:8000/predict_logs_cordinate?log_url={log['url']}")   
+                request_info = request_info.json()
+                graphs_cluster_array += [request_info['result']['Ox'], request_info['result']['Oy'], request_info['result']['Cluster_id']]
+                dbase.new_cluster(log['id'], request_info['result']['Ox'], request_info['result']['Oy'], request_info['result']['Cluster_id'])
+
+        return JSONResponse(content={"graphs":graphs['graphs'], "count_logs":graphs['count_logs'], "graphs_cluster":graphs_cluster_array}, status_code=200)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -57,7 +81,19 @@ async def get_graphs_period(period: dict):
 async def get_graphs_package(package: str):
     try:
         graphs = dbase.get_graphs_package(package)
-        return JSONResponse(content={"graphs":graphs['graphs'], "count_logs":graphs['count_logs']}, status_code=200)
+        graphs_cluster_array = []
+        logs = dbase.get_logs()
+        for log in logs:
+            graphs_cluster = dbase.get_graphs_cluster_package(log['id'], package)
+            if graphs_cluster:
+                graphs_cluster_array += [graphs_cluster[1],graphs_cluster[2], graphs_cluster[3], graphs_cluster[4]]
+            else:
+                request_info = requests.get(f"http://ml_backend:8000/predict_logs_cordinate?log_url={log['url']}")   
+                request_info = request_info.json()
+                graphs_cluster_array += [request_info['result']['Ox'], request_info['result']['Oy'], request_info['result']['Cluster_id']]
+                dbase.new_cluster(log['id'], request_info['result']['Ox'], request_info['result']['Oy'], request_info['result']['Cluster_id'])
+
+        return JSONResponse(content={"graphs":graphs['graphs'], "count_logs":graphs['count_logs'], "graphs_cluster":graphs_cluster_array}, status_code=200)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -69,6 +105,12 @@ async def get_graphs_package_period(body: dict):
         startDate = datetime.strptime(body["startDate"], "%Y-%m-%d:%H:%M:%S")
         endDate = datetime.strptime(body["endDate"], "%Y-%m-%d:%H:%M:%S")
         graphs = dbase.get_graphs_package_period(package=package, startDate=startDate, endDate=endDate)
+        graphs_cluster_array = []
+        logs = dbase.get_logs()
+        for log in logs:
+            graphs_cluster = dbase.get_graphs_cluster_package_period(log['id'], package, startDate, endDate)
+            if graphs_cluster:
+                graphs_cluster_array += [graphs_cluster[1],graphs_cluster[2], graphs_cluster[3], graphs_cluster[4]]
         return JSONResponse(content={"graphs":graphs['graphs'], "count_logs":graphs['count_logs']}, status_code=200)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -83,7 +125,7 @@ async def analyze_log(id: str):
         if log_struct:
             log_url = log_struct['url']
             log = requests.get(log_url).text
-            info_for_bad_lines = requests.get(f"http://localhost:8000/predict_sus_lines?log_url={log_url}&top_k=5")
+            info_for_bad_lines = requests.get(f"http://ml_backend:8000/predict_sus_lines?log_url={log_url}&top_k=5")
             info_for_bad_lines = info_for_bad_lines.json()['result']
             result = ai_parse(log)
 

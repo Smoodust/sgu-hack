@@ -29,8 +29,21 @@ def create_tables():
             tbfs_since TIMESTAMP NOT NULL
         )
         """
+
+        create_cluster_table = """
+        CREATE TABLE IF NOT EXISTS cluster (
+            id SERIAL PRIMARY KEY,
+            log_id INT NOT NULL,
+            Ox DOUBLE PRECISION NOT NULL,
+            Oy DOUBLE PRECISION NOT NULL,
+            Cluster_id INT NOT NULL,
+            FOREIGN KEY (log_id) REFERENCES logs(id)
+        )
+        """
         cursor.execute(create_logs_table)
         print("Table 'logs' created successfully")
+        cursor.execute(create_cluster_table)
+        print("Table 'cluster' created successfully")
 
     except (Exception, psycopg2.Error) as error:
         print(f"Error while creating table: {error}")

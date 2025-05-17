@@ -156,7 +156,31 @@ class Dbase:
             'count_logs': count_logs,
             'graphs': graphs
         }
+    
+    def get_graphs_cluster(self, log_id):
+        self.cursor.execute("""SELECT * FROM cluster WHERE log_id = %s""", (log_id,))
+        clusters = self.cursor.fetchall()
+        return clusters
+    
+    def new_cluster(self, log_id, Ox, Oy, Cluster_id):
+        self.cursor.execute("""INSERT INTO cluster(log_id, Ox, Oy, Cluster_id) VALUES(%s, %s, %s, %s)""", (log_id, Ox, Oy, Cluster_id))
+        self.connection.commit()
 
+    def get_graphs_cluster_period(self, log_id, startDate, endDate):
+        self.cursor.execute("""SELECT * FROM cluster WHERE log_id = %s AND tbfs_since BETWEEN %s AND %s""", (log_id, startDate, endDate))
+        clusters = self.cursor.fetchall()
+        return clusters
+    
+    def get_graphs_cluster_package(self, log_id, package):
+        self.cursor.execute("""SELECT * FROM cluster WHERE log_id = %s AND name = %s""", (log_id, package))
+        clusters = self.cursor.fetchall()
+        return clusters
+    
+    def get_graphs_cluster_package_period(self, log_id, package, startDate, endDate):
+        self.cursor.execute("""SELECT * FROM cluster WHERE log_id = %s AND name = %s AND tbfs_since BETWEEN %s AND %s""", (log_id, package, startDate, endDate))
+        clusters = self.cursor.fetchall()
+        return clusters
+    
 dbase = Dbase()
 
 def get_db():
