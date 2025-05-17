@@ -15,10 +15,10 @@ const Mean = observer(() => {
       {ModalStore.getOpen() ? <ModalComponent /> : ''}
       <Title>Name Error</Title>
       <Grid container spacing={2}>
-        <Grid size={6}>
+        <Grid size={6} height={1/2}>
           <LineChartComponent />
         </Grid>
-        <Grid size={6}>
+        <Grid size={6} height={1/2}>
           <PieChartComponent />
         </Grid>
         <Grid size={12}>

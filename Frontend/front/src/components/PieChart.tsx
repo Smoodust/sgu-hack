@@ -3,7 +3,8 @@ import { PieChartElement } from '../styled/Chart.styled';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { useEffect, useState } from 'react';
 import API from '../utils/API';
-import { IGauge } from '@/utils/Interfaces/IGauge';
+import { IGauge } from '../utils/Interfaces/IGauge';
+import { Subtitle } from '../styled/Base.styled';
 const PieChartComponent = () => {
   const [gaugeData, setGaugeData] = useState<IGauge>({ success: 0, failed: 0 });
   useEffect(() => {
@@ -17,11 +18,13 @@ const PieChartComponent = () => {
   }, []);
   return (
     <PieChartElement>
+      <Subtitle>Error logs counts</Subtitle>
       <Gauge
+      height={400}
         sx={{
           backgroundColor: '#1F1F1F',
           '& .MuiGauge-referenceArc': {
-            fill: '#ccccdd',
+            fill: '#f2495c',
           },
           '& .MuiGauge-valueArc': {
             fill: '#f2495c',

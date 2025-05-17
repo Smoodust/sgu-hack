@@ -101,7 +101,7 @@ services:
   backend-dev:
     build: 
       context: ./Backend
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
       target: development
     container_name: backend-dev
     environment:
@@ -143,16 +143,16 @@ services:
 
 #################### FRONTEND #################### 
 
-  frontend_dev:
-    build:
-      context: ./Frontend
-      dockerfile: Dockerfile.dev
-    container_name: frontend_dev
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./Frontend/front:/app
-      - ./Frontend/front/node_modules:/app/node_modules
+  # frontend_dev:
+  #   build:
+  #     context: ./Frontend
+  #     dockerfile: Dockerfile.dev
+  #   container_name: frontend_dev
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./Frontend/front:/app
+  #     - ./Frontend/front/node_modules:/app/node_modules
 
 volumes:
   loki_data:

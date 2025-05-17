@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { ICountLogs } from '../utils/Interfaces/ICountLogs';
 import API from '../utils/API';
+import { Subtitle } from '../styled/Base.styled';
 const LineChartComponent = () => {
   const [dataset, setDataSet] = useState<any[]>([]);
   useEffect(() => {
@@ -16,6 +17,7 @@ const LineChartComponent = () => {
   }, []);
   return (
     <LineChartElement>
+      <Subtitle>График поломанных логов по времени</Subtitle>
       <LineChart
         sx={{
           backgroundColor: '#1F1F1F',
@@ -47,7 +49,7 @@ const LineChartComponent = () => {
             data: dataset.map((item) => item.count),
           },
         ]}
-        height={300}
+        height={440}
       />
     </LineChartElement>
   );

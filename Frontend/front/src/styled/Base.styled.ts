@@ -11,4 +11,12 @@ const Title = styled.h1`
   font-family: Montserrat !important;
 `;
 
-export { Frame, Title };
+const Subtitle = styled.h2`
+  font-size: 1rem;
+  color: #ccccdd;
+  text-align: center;
+  font-family: Montserrat !important;
+  margin: 0 0 10px 0;
+`
+
+export { Frame, Title, Subtitle };
