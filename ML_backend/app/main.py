@@ -1,15 +1,12 @@
-from typing import List
 from fastapi import FastAPI, HTTPException, Query
 import requests
 
 from prometheus_fastapi_instrumentator import Instrumentator
 
-import numpy as np
-import random
-
 import fasttext
 
-from monitoring_app import metrics_app, calculate_drift, DRIFT_SCORE
+from monitoring_app import metrics_app, calculate_sus_lines_drift, SUS_DRIFT_SCORE
+from models import SuspiciousLineResponse
 
 
 app = FastAPI(
@@ -25,12 +22,13 @@ app = FastAPI(
 app.mount("/metrics", metrics_app)
 Instrumentator().instrument(app).expose(app)
 
-classifier_model = fasttext.load_model("./app/models/logs_classifier.bin")
+classifier_model = fasttext.load_model("./models/logs_classifier.bin")
 
 
 @app.get(
         "/predict_sus_lines", 
         status_code=200,
+        response_model=SuspiciousLineResponse,
         summary="Отдает подозрительные строчки"
 )
 def predict_sus_lines(
@@ -45,7 +43,7 @@ def predict_sus_lines(
         example=5,
         description="Количество отдаваемых строчек"
     )
-) -> List[str]:
+) -> SuspiciousLineResponse:
     global classifier_model
     if classifier_model is None:
         raise HTTPException(status_code=404, detail="No models found")
@@ -72,28 +70,22 @@ def predict_sus_lines(
             continue 
 
     predictions.sort(key=lambda x: x[1], reverse=True)
-    top_sus_lines = [line for line, prob in predictions[:top_k]]
+    calculate_sus_lines_drift(predictions)
+    top_sus_lines = [line for line, _ in predictions[:top_k]]
     
-    return top_sus_lines
-
-
-@app.get(
-        "/check_drift", 
-        status_code=200,
-        summary="Проверка модели на дрифт"
-)
-def check_drift():
-    pass
+    return {
+        "result": top_sus_lines
+    }
 
 @app.post(
-        "/check_alert", 
+        "/check_alert/sus_lines", 
         status_code=200,
-        summary="Проверка алертов Grafana"
+        summary="Проверка алертов Grafana для детекции подозрительных строк"
 )
 def check_alert():
-    DRIFT_SCORE.set(1)
+    SUS_DRIFT_SCORE.set(1)
     return {
-        "OH, NO!!!! IT'S DRIFTING~~~"
+        "OH, NO!!!! AMOGUS~~~"
     }
 
 

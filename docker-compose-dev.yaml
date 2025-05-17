@@ -62,19 +62,42 @@ services:
 
 #################### APP #################### 
 
-#  redis:
-#    image: redis:7
-#    container_name: redis
-#    ports:
-#      - "6379:6379"
-#    healthcheck:
-#      test: ["CMD", "redis-cli", "ping"]
-#      interval: 30s
-#      timeout: 10s
-#      retries: 5
-#      start_period: 10s
-#    networks:
-#      - backend-network
+  postgres:
+    image: postgres:latest
+    container_name: postgres_fast_api
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: data123
+      POSTGRES_DB: sgu_hack
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data/pgdata
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    command: >
+      postgres -c max_connections=1000
+               -c shared_buffers=256MB
+               -c effective_cache_size=768MB
+               -c maintenance_work_mem=64MB
+               -c checkpoint_completion_target=0.7
+               -c wal_buffers=16MB
+               -c default_statistics_target=100
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres_user -d postgres_db" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
 
 #################### BACKEND #################### 
   ml_dev:
@@ -86,7 +109,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./app:/app
+      - ./ML_backend/app:/app
       - ~/.cache/pypoetry:/root/.cache/pypoetry 
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
@@ -109,11 +132,12 @@ services:
       - PYTHONUNBUFFERED=1
     volumes:
       - ./Backend:/app 
-      - /app/__pycache__  
+      - /app/pycache  
     ports:
       - "8001:8001"
     command: uvicorn main:app --host 0.0.0.0 --port 8001 --reload
-    restart: unless-stopped
+    depends_on:
+      - postgres
     networks:
       - backend-network
       - monitoring 
@@ -143,21 +167,23 @@ services:
 
 #################### FRONTEND #################### 
 
-  # frontend_dev:
-  #   build:
-  #     context: ./Frontend
-  #     dockerfile: Dockerfile.dev
-  #   container_name: frontend_dev
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - ./Frontend/front:/app
-  #     - ./Frontend/front/node_modules:/app/node_modules
+  frontend_dev:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile.dev
+    container_name: frontend_dev
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./frontend:/app
+      - ./frontend/node_modules:/app/node_modules
 
 volumes:
   loki_data:
   prometheus_data:
   grafana_data:
+  pgdata:
+    driver: local
 
 networks:
   backend-network:

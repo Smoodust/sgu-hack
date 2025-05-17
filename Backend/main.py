@@ -3,6 +3,9 @@ import uvicorn
 from apscheduler.schedulers.background import BackgroundScheduler
 from fastapi import FastAPI, HTTPException
 from datetime import datetime
+
+from starlette.middleware.cors import CORSMiddleware
+
 from db.db import parse_logs
 from db.config import URL_PARSE_LOGS
 from handlers.swaggerDis import custom_openapi
@@ -36,6 +39,24 @@ scheduler.start()
 
 
 app = FastAPI()
+
+origins = [
+    "http://localhost.tiangolo.com",
+    "https://localhost.tiangolo.com",
+    "http://localhost",
+    "http://localhost:8080",
+    "http://localhost:3001",
+    "http://localhost:8000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.openapi = lambda: custom_openapi(app)
 
 app.include_router(router)
