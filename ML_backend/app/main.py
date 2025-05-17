@@ -6,6 +6,7 @@ from prometheus_fastapi_instrumentator import Instrumentator
 import fasttext
 
 from monitoring_app import metrics_app, calculate_sus_lines_drift, SUS_DRIFT_SCORE
+from NN_models.network import logs_embedder
 from models import SuspiciousLineResponse
 
 
@@ -23,6 +24,39 @@ app.mount("/metrics", metrics_app)
 Instrumentator().instrument(app).expose(app)
 
 classifier_model = fasttext.load_model("./models/logs_classifier.bin")
+
+
+@app.get(
+        "/predict_logs_cordinate", 
+        status_code=200,
+        summary="Отдает кординаты для лога"
+)
+def predict_logs_cordinate(
+    log_url: str = Query(
+        ...,
+        description="URL логов"
+    ), 
+    top_k: int = Query(
+        5,
+        ge=1,
+        le=50,
+        example=5,
+        description="Количество отдаваемых строчек"
+    )
+) -> list[float]:
+    global classifier_model
+    if classifier_model is None:
+        raise HTTPException(status_code=404, detail="No models found")
+    
+    try:
+        log = requests.get(log_url).text
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to fetch log: {str(e)}")
+    
+    if not log:
+        raise HTTPException(status_code=404, detail="No logs found")
+    
+    return logs_embedder(log[-100:]).tolist()
 
 
 @app.get(
@@ -59,13 +93,14 @@ def predict_sus_lines(
     lines = log.splitlines()[-500:] 
     predictions = []
 
-    for line in lines:
+    for line_a, line_b in zip(lines[:-1], lines[1:]):
+        line = line_a + " " + line_b
         if not line.strip():
             continue
             
         try:
-            (label,), (prob,) = classifier_model.predict(line.strip(), k=1)
-            predictions.append((line, prob))
+            (_,), (prob,) = classifier_model.predict(line.strip(), k=1)
+            predictions.append((line_a + "\n" + line_b, prob))
         except Exception as e:
             continue 
 
