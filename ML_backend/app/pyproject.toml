@@ -17,8 +17,8 @@ dependencies = [
     "pandas (>=2.2.3,<3.0.0)",
     "pyarrow (>=20.0.0,<21.0.0)",
     "prometheus-fastapi-instrumentator (>=7.1.0,<8.0.0)",
-    "fasttext (>=0.9.3,<0.10.0)",
     "requests (>=2.32.3,<3.0.0)",
+    "fasttext-wheel (>=0.9.2,<0.10.0)",
 ]
 
 [tool.poetry]
