@@ -71,7 +71,7 @@ services:
       POSTGRES_DB: fast_api
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data/pgdata
     deploy:
@@ -136,7 +136,8 @@ services:
     ports:
       - "8001:8001"
     command: uvicorn main:app --host 0.0.0.0 --port 8001 --reload
-    restart: unless-stopped
+    depends_on:
+      - postgres
     networks:
       - backend-network
       - monitoring 
