@@ -19,17 +19,20 @@ RUN apt-get update && \
     libpq-dev \
     gcc \
     python3-dev && \
-    rm -rf /var/lib/apt/lists/* 
+    rm -rf /var/lib/apt/lists/*
 
 RUN pip install "poetry==$POETRY_VERSION"
 
 WORKDIR $PYSETUP_PATH
 COPY poetry.lock pyproject.toml ./
 
+# Create dummy README.md to satisfy Poetry's requirement
+RUN touch README.md
+
 RUN python -m venv $VENV_PATH \
     && . $VENV_PATH/bin/activate \
     && pip install --upgrade pip \
-    && poetry install --only main
+    && poetry install --only main --no-root  # Skip project installation in builder
 
 FROM python-base AS development
 ENV FASTAPI_ENV=development
