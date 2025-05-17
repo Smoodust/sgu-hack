@@ -167,19 +167,49 @@ class Dbase:
         self.connection.commit()
 
     def get_graphs_cluster_period(self, log_id, startDate, endDate):
-        self.cursor.execute("""SELECT * FROM cluster WHERE log_id = %s AND tbfs_since BETWEEN %s AND %s""", (log_id, startDate, endDate))
+        self.cursor.execute("""
+            SELECT c.* 
+            FROM cluster c
+            INNER JOIN logs l ON c.log_id = l.id
+            WHERE c.log_id = %s AND l.tbfs_since BETWEEN %s AND %s
+        """, (log_id, startDate, endDate))
         clusters = self.cursor.fetchall()
         return clusters
     
     def get_graphs_cluster_package(self, log_id, package):
-        self.cursor.execute("""SELECT * FROM cluster WHERE log_id = %s AND name = %s""", (log_id, package))
+        self.cursor.execute("""
+            SELECT c.* 
+            FROM cluster c
+            INNER JOIN logs l ON c.log_id = l.id
+            WHERE c.log_id = %s AND l.name = %s
+        """, (log_id, package))
         clusters = self.cursor.fetchall()
         return clusters
     
     def get_graphs_cluster_package_period(self, log_id, package, startDate, endDate):
-        self.cursor.execute("""SELECT * FROM cluster WHERE log_id = %s AND name = %s AND tbfs_since BETWEEN %s AND %s""", (log_id, package, startDate, endDate))
+        self.cursor.execute("""
+            SELECT c.* 
+            FROM cluster c
+            INNER JOIN logs l ON c.log_id = l.id
+            WHERE c.log_id = %s AND l.name = %s AND l.tbfs_since BETWEEN %s AND %s
+        """, (log_id, package, startDate, endDate))
         clusters = self.cursor.fetchall()
         return clusters
+    
+    def get_logs_period(self, startDate, endDate):
+        self.cursor.execute("""SELECT * FROM logs WHERE tbfs_since BETWEEN %s AND %s""", (startDate, endDate))
+        logs = self.cursor.fetchall()
+        return logs
+    
+    def get_logs_package(self, package):
+        self.cursor.execute("""SELECT * FROM logs WHERE name = %s""", (package,))
+        logs = self.cursor.fetchall()
+        return logs
+
+    def get_logs_package_period(self, package, startDate, endDate):
+        self.cursor.execute("""SELECT * FROM logs WHERE name = %s AND tbfs_since BETWEEN %s AND %s""", (package, startDate, endDate))
+        logs = self.cursor.fetchall()
+        return logs
     
 dbase = Dbase()
 

@@ -3,10 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { ICountLogs } from '../utils/Interfaces/ICountLogs';
 import API from '../utils/API';
-import { Subtitle } from '../styled/Base.styled';
+import { Loader, Subtitle } from '../styled/Base.styled';
 import { flex } from 'styled-system';
 const LineChartComponent = () => {
-  const [dataset, setDataSet] = useState<any[]>([]);
+  const [dataset, setDataSet] = useState<any[]>();
   useEffect(() => {
     API.getCountLogs()
       .then((res: ICountLogs[]) => {
@@ -19,7 +19,7 @@ const LineChartComponent = () => {
   return (
     <LineChartElement>
       <Subtitle>Time siries of the failed packages</Subtitle>
-      <LineChart
+     {dataset? <LineChart
         sx={{
           backgroundColor: '#1F1F1F',
           '& text tspan': {
@@ -51,7 +51,7 @@ const LineChartComponent = () => {
           },
         ]}
         height={440}
-      />
+      />: <Loader/>}
     </LineChartElement>
   );
 };

@@ -14,17 +14,18 @@ import ModalStore from '../stores/Modal.store';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import API from '../utils/API';
+import { Loader } from '../styled/Base.styled';
 const ModalComponent = observer(() => {
   useEffect(() => {
     API.getModalData().then((res) => {
-      ModalStore.setModuleData('warnings', res['result']['warnings']);
-      ModalStore.setModuleData('errors', res['result']['errors']);
-      ModalStore.setModuleData('mainError', res['result']['mainError']);
+      ModalStore.setModuleData('warnings', res['result']&&res['result']['warnings']);
+      ModalStore.setModuleData('errors', res['result']&&res['result']['errors']);
+      ModalStore.setModuleData('mainError', res['result']&&res['result']['mainError']);
       ModalStore.setModuleData(
         'possibleReason',
-        res['result']['possibleReason']
+        res['result']&&res['result']['possibleReason']
       );
-      ModalStore.setModuleData('possiblePatch', res['result']['possiblePatch']);
+      ModalStore.setModuleData('possiblePatch', res['result']&&res['result']['possiblePatch']);
             ModalStore.setModuleData('badLines', res['badLines']);
     });
   }, []);
@@ -70,37 +71,37 @@ const ModalComponent = observer(() => {
             <ModuleChild>
               <ModuleChildTitle>Warnings</ModuleChildTitle>
               <ModuleChildValue>
-                {ModalStore.getModuleData().warnings}
+                {ModalStore.getModuleData().warnings?ModalStore.getModuleData().warnings:<Loader/>}
               </ModuleChildValue>
             </ModuleChild>
             <ModuleChild>
               <ModuleChildTitle>Errors</ModuleChildTitle>
               <ModuleChildValue>
-                {ModalStore.getModuleData().errors}
+                {ModalStore.getModuleData().errors?ModalStore.getModuleData().errors:<Loader/>}
               </ModuleChildValue>
             </ModuleChild>
             <ModuleChild>
               <ModuleChildTitle>Main error</ModuleChildTitle>
               <ModuleChildValue>
-                {ModalStore.getModuleData().mainError}
+                {ModalStore.getModuleData().mainError?ModalStore.getModuleData().mainError:<Loader/>}
               </ModuleChildValue>
             </ModuleChild>
             <ModuleChild>
               <ModuleChildTitle>Possible reason</ModuleChildTitle>
               <ModuleChildValue>
-                {ModalStore.getModuleData().possibleReason}
+                {ModalStore.getModuleData().possibleReason?ModalStore.getModuleData().possibleReason:<Loader/>}
               </ModuleChildValue>
             </ModuleChild>
             <ModuleChild>
               <ModuleChildTitle>Possible patch</ModuleChildTitle>
               <ModuleChildValue>
-                {ModalStore.getModuleData().possiblePatch}
+                {ModalStore.getModuleData().possiblePatch?ModalStore.getModuleData().possiblePatch:<Loader/>}
               </ModuleChildValue>
             </ModuleChild>
               <ModuleChild>
               <ModuleChildTitle>Bad lines</ModuleChildTitle>
               <ModuleChildValue>
-                {ModalStore.getModuleData()?.badLines?ModalStore.getModuleData()?.badLines[0]:""}
+                {ModalStore.getModuleData()?.badLines?ModalStore.getModuleData()?.badLines[0]:<Loader/>}
               </ModuleChildValue>
               <ModuleChildValue>
                   {ModalStore.getModuleData()?.badLines?ModalStore.getModuleData()?.badLines[1]:""}
