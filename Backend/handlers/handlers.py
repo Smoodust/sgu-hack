@@ -46,8 +46,8 @@ async def get_graphs():
             else:
                 request_info = requests.get(f"http://ml_backend:8000/predict_logs_cordinate?log_url={log['url']}")   
                 request_info = request_info.json()
-                graphs_cluster_array += [request_info['result']['Ox'], request_info['result']['Oy'], request_info['result']['Cluster_id']]
-                dbase.new_cluster(log['id'], request_info['result']['Ox'], request_info['result']['Oy'], request_info['result']['Cluster_id'])
+                graphs_cluster_array += [request_info['x'], request_info['y'], request_info['cluster']]
+                dbase.new_cluster(log['id'], request_info['x'], request_info['y'], request_info['cluster'])
 
         return JSONResponse(content={"graphs":graphs['graphs'], "count_logs":graphs['count_logs'], "graphs_cluster":graphs_cluster_array}, status_code=200)
     except Exception as e:
@@ -69,8 +69,8 @@ async def get_graphs_period(period: dict):
             else:
                 request_info = requests.get(f"http://ml_backend:8000/predict_logs_cordinate?log_url={log['url']}")   
                 request_info = request_info.json()
-                graphs_cluster_array += [request_info['result']['Ox'], request_info['result']['Oy'], request_info['result']['Cluster_id']]
-                dbase.new_cluster(log['id'], request_info['result']['Ox'], request_info['result']['Oy'], request_info['result']['Cluster_id'])
+                graphs_cluster_array += [request_info['x'], request_info['y'], request_info['cluster']]
+                dbase.new_cluster(log['id'], request_info['x'], request_info['y'], request_info['cluster'])
 
         return JSONResponse(content={"graphs":graphs['graphs'], "count_logs":graphs['count_logs'], "graphs_cluster":graphs_cluster_array}, status_code=200)
     except Exception as e:
@@ -90,8 +90,8 @@ async def get_graphs_package(package: str):
             else:
                 request_info = requests.get(f"http://ml_backend:8000/predict_logs_cordinate?log_url={log['url']}")   
                 request_info = request_info.json()
-                graphs_cluster_array += [request_info['result']['Ox'], request_info['result']['Oy'], request_info['result']['Cluster_id']]
-                dbase.new_cluster(log['id'], request_info['result']['Ox'], request_info['result']['Oy'], request_info['result']['Cluster_id'])
+                graphs_cluster_array += [request_info['x'], request_info['y'], request_info['cluster']]
+                dbase.new_cluster(log['id'], request_info['x'], request_info['y'], request_info['cluster'])
 
         return JSONResponse(content={"graphs":graphs['graphs'], "count_logs":graphs['count_logs'], "graphs_cluster":graphs_cluster_array}, status_code=200)
     except Exception as e:
@@ -114,8 +114,8 @@ async def get_graphs_package_period(body: dict):
             else:
                 request_info = requests.get(f"http://ml_backend:8000/predict_logs_cordinate?log_url={log['url']}")   
                 request_info = request_info.json()
-                graphs_cluster_array += [request_info['result']['Ox'], request_info['result']['Oy'], request_info['result']['Cluster_id']]
-                dbase.new_cluster(log['id'], request_info['result']['Ox'], request_info['result']['Oy'], request_info['result']['Cluster_id'])
+                graphs_cluster_array += [request_info['x'], request_info['y'], request_info['cluster']]
+                dbase.new_cluster(log['id'], request_info['x'], request_info['y'], request_info['cluster'])
 
         return JSONResponse(content={"graphs":graphs['graphs'], "count_logs":graphs['count_logs'], "graphs_cluster":graphs_cluster_array}, status_code=200)
     except Exception as e:
