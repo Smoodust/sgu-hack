@@ -179,7 +179,7 @@
           },
           "direction": "forward",
           "editorMode": "builder",
-          "expr": "{container=\"development\", service_name=\"development\"}",
+          "expr": "{container=\"ml_dev\", service_name=\"ml_dev\"}",
           "queryType": "range",
           "refId": "A"
         }
@@ -244,7 +244,7 @@
           },
           "direction": "backward",
           "editorMode": "builder",
-          "expr": "rate({container=\"development\",service_name=\"development\"}[$__auto])",
+          "expr": "rate({container=\"ml_dev\",service_name=\"ml_dev\"}[$__auto])",
           "queryType": "range",
           "refId": "A"
         }
@@ -476,7 +476,7 @@
         {
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "process_cpu_seconds_total{instance=\"development:8000\"}",
+          "expr": "process_cpu_seconds_total{instance=\"ml_dev:8000\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "legendFormat": "__auto",
@@ -570,8 +570,8 @@
     "list": []
   },
   "time": {
-    "from": "2025-05-14T20:00:00.000Z",
-    "to": "2025-05-15T19:59:59.000Z"
+    "from": "now-6h",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",

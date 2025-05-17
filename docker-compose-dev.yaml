@@ -47,11 +47,11 @@ services:
       - ./ML_backend/grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
       - ./ML_backend/grafana/provisioning/dashboards/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml
       - ./ML_backend/grafana/provisioning/dashboards/ML_dashboard-1747323715280.json:/etc/grafana/provisioning/dashboards/ML_dashboard-1747323715280.json
-      #- ./ML_backend/grafana/provisioning/alerting/alert-rules.yaml:/etc/grafana/provisioning/alerting/alert-rules.yaml
+      - ./ML_backend/grafana/provisioning/alerting/alert-rules.yaml:/etc/grafana/provisioning/alerting/alert-rules.yaml
       #- ./ML_backend/grafana/provisioning/alerting/contact-points.yaml:/etc/grafana/provisioning/alerting/contact-points.yaml
       - grafana_data:/var/lib/grafana
     healthcheck:
-      test: ["CMD-SHELL", "wget --spider http://localhost:3000/api/health || exit 1"]
+      test: ["CMD-SHELL", "wget --spider http://localhost:3001/api/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
