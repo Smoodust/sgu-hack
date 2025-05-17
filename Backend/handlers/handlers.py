@@ -39,15 +39,19 @@ async def get_graphs():
         graphs = dbase.get_graphs()
         graphs_cluster_array = []
         logs = dbase.get_logs()
+        limit = 20
         for log in logs:
             graphs_cluster = dbase.get_graphs_cluster(log['id'])
             if graphs_cluster:
                 graphs_cluster_array += [graphs_cluster[1],graphs_cluster[2], graphs_cluster[3], graphs_cluster[4]]
-            else:
+            elif limit > 0:
                 request_info = requests.get(f"http://ml_dev:8000/predict_logs_cordinate?log_url={log['url']}")   
                 request_info = request_info.json()
                 graphs_cluster_array += [request_info['x'], request_info['y'], request_info['cluster']]
-                dbase.new_cluster(log['id'], request_info['x'], request_info['y'], request_info['cluster'])
+                dbase.new_cluster(log['id'], request_info['x'], request_info['y'], request_info['cluster']) 
+                limit -= 1
+            else:
+                break
 
         return JSONResponse(content={"graphs":graphs['graphs'], "count_logs":graphs['count_logs'], "graphs_cluster":graphs_cluster_array}, status_code=200)
     except Exception as e:
@@ -62,15 +66,19 @@ async def get_graphs_period(period: dict):
         graphs = dbase.get_graphs_period(startDate=startDate, endDate=endDate)
         graphs_cluster_array = []
         logs = dbase.get_logs()
+        limit = 20
         for log in logs:
             graphs_cluster = dbase.get_graphs_cluster_period(log['id'], startDate, endDate)
             if graphs_cluster:
                 graphs_cluster_array += [graphs_cluster[1],graphs_cluster[2], graphs_cluster[3], graphs_cluster[4]]
-            else:
+            elif limit > 0:
                 request_info = requests.get(f"http://ml_dev:8000/predict_logs_cordinate?log_url={log['url']}")   
                 request_info = request_info.json()
                 graphs_cluster_array += [request_info['x'], request_info['y'], request_info['cluster']]
                 dbase.new_cluster(log['id'], request_info['x'], request_info['y'], request_info['cluster'])
+                limit -= 1
+            else:
+                break
 
         return JSONResponse(content={"graphs":graphs['graphs'], "count_logs":graphs['count_logs'], "graphs_cluster":graphs_cluster_array}, status_code=200)
     except Exception as e:
@@ -83,15 +91,19 @@ async def get_graphs_package(package: str):
         graphs = dbase.get_graphs_package(package)
         graphs_cluster_array = []
         logs = dbase.get_logs()
+        limit = 20
         for log in logs:
             graphs_cluster = dbase.get_graphs_cluster_package(log['id'], package)
             if graphs_cluster:
                 graphs_cluster_array += [graphs_cluster[1],graphs_cluster[2], graphs_cluster[3], graphs_cluster[4]]
-            else:
+            elif limit > 0:
                 request_info = requests.get(f"http://ml_dev:8000/predict_logs_cordinate?log_url={log['url']}")   
                 request_info = request_info.json()
                 graphs_cluster_array += [request_info['x'], request_info['y'], request_info['cluster']]
                 dbase.new_cluster(log['id'], request_info['x'], request_info['y'], request_info['cluster'])
+                limit -= 1
+            else:
+                break
 
         return JSONResponse(content={"graphs":graphs['graphs'], "count_logs":graphs['count_logs'], "graphs_cluster":graphs_cluster_array}, status_code=200)
     except Exception as e:
@@ -107,15 +119,19 @@ async def get_graphs_package_period(body: dict):
         graphs = dbase.get_graphs_package_period(package=package, startDate=startDate, endDate=endDate)
         graphs_cluster_array = []
         logs = dbase.get_logs()
+        limit = 20
         for log in logs:
             graphs_cluster = dbase.get_graphs_cluster_package_period(log['id'], package, startDate, endDate)
             if graphs_cluster:
                 graphs_cluster_array += [graphs_cluster[1],graphs_cluster[2], graphs_cluster[3], graphs_cluster[4]]
-            else:
+            elif limit > 0:
                 request_info = requests.get(f"http://ml_dev:8000/predict_logs_cordinate?log_url={log['url']}")   
                 request_info = request_info.json()
                 graphs_cluster_array += [request_info['x'], request_info['y'], request_info['cluster']]
                 dbase.new_cluster(log['id'], request_info['x'], request_info['y'], request_info['cluster'])
+                limit -= 1
+            else:
+                break
 
         return JSONResponse(content={"graphs":graphs['graphs'], "count_logs":graphs['count_logs'], "graphs_cluster":graphs_cluster_array}, status_code=200)
     except Exception as e:
