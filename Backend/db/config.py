@@ -1,7 +1,7 @@
 # PostgreSQL configuration
 user = "postgres"
 password = "data123"
-host = "localhost"
+host = "db"
 port = "5432"
 database = "sgu_hack"
 token_proverka = '32631.OK3qCkZZqwnADnu8j'

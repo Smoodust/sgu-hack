@@ -1,15 +1,13 @@
-from typing import List
 from fastapi import FastAPI, HTTPException, Query
 import requests
 
 from prometheus_fastapi_instrumentator import Instrumentator
 
-import random
-
 import fasttext
 
 from monitoring_app import metrics_app, calculate_sus_lines_drift, SUS_DRIFT_SCORE
 from models import SuspiciousLineResponse
+
 
 app = FastAPI(
     title="ML Log Analysis API",
