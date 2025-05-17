@@ -164,14 +164,12 @@ async def analyze_log(id: str):
 async def get_cluster_description(body: dict):
     try:
         ## Хэш таблица с ключом - id кластера и значением - лог
-        cluster_id_dict = body["cluster_dict"].keys()
-        cluster_id_list = list(cluster_id_dict)
+        cluster_dict = body["cluster_dict"]
         logs = ""
-        for cluster_id in cluster_id_list:
-            log = cluster_id_dict[cluster_id]
+        for cluster_id, log in cluster_dict.items():
             logs += f'Log {cluster_id}: {log} \n'
         ## Дескрипция ошибок в кластере
-        res =  errors_description(logs)
+        res = errors_description(logs)
         return JSONResponse(content={"result":res}, status_code=200)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
