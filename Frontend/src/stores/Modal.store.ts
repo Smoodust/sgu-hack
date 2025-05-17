@@ -7,6 +7,8 @@ class ModalStore {
   private _open: boolean = false;
   private _moduleData: any = {};
   private _startDate: string = "";
+    private _pieC: any = undefined;
+      private _scatter: any = undefined;
 private _endDate: string = "";
   getOpen() {
     return this._open;
@@ -39,6 +41,22 @@ private _endDate: string = "";
 
   setEndDate(date: string) {
     this._endDate = date;
+  }
+
+   getPieC() {
+    return this._pieC;
+  }
+
+  setPieC(open: any) {
+    this._pieC = open;
+  }
+
+   getScatterC() {
+    return this._scatter;
+  }
+
+  setScatterC(open: any) {
+    this._scatter = open;
   }
 }
 
