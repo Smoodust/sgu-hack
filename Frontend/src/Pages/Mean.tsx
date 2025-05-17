@@ -17,38 +17,7 @@ const Mean = observer(() => {
       {ModalStore.getOpen() ? <ModalComponent /> : ''}
       <Title>Name Error</Title>
       <Grid container spacing={2}>
-        <Grid size={12}>
-          <Input
-            type="date"
-            onChange={(e:any)=>{
-              ModalStore.setStartDate(e.target.value)
-            }}
-            sx={{
-              color: '#bbbbbb !important',
-              '& .MuiInputBase-input': {
-                color: '#9e9e9e !important',
-                fill: '#9e9e9e !important',
-                stroke: '#9e9e9e !important',
-                opacity: 1,
-              },
-            }}
-          />
-          <Input
-            type="date"
-              onChange={(e:any)=>{
-              ModalStore.setEndDate(e.target.value)
-            }}
-            sx={{
-              color: '#bbbbbb !important',
-              '& .MuiInputBase-input': {
-                color: '#9e9e9e !important',
-                fill: '#9e9e9e !important',
-                stroke: '#9e9e9e !important',
-                opacity: 1,
-              },
-            }}
-          />
-        </Grid>
+       
         <Grid size={4} height={1 / 2}>
           <LineChartComponent />
         </Grid>
