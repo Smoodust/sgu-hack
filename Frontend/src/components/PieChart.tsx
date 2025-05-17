@@ -6,7 +6,7 @@ import API from '../utils/API';
 import { IGauge } from '../utils/Interfaces/IGauge';
 import { Subtitle } from '../styled/Base.styled';
 const PieChartComponent = () => {
-  const [gaugeData, setGaugeData] = useState<IGauge>({ success: 0, failed: 0 });
+  const [gaugeData, setGaugeData] = useState<any>({ count_logs: 0 });
   useEffect(() => {
     API.getGauge()
       .then((res) => {
@@ -20,7 +20,7 @@ const PieChartComponent = () => {
     <PieChartElement>
       <Subtitle>Error logs counts</Subtitle>
       <Gauge
-      height={440}
+        height={440}
         sx={{
           backgroundColor: '#1F1F1F',
           '& .MuiGauge-referenceArc': {
@@ -42,10 +42,10 @@ const PieChartComponent = () => {
             fill: '#ccccdd !important',
           },
         }}
-        value={gaugeData?.failed}
-        startAngle={(gaugeData?.success + gaugeData?.failed) * -1}
-        endAngle={gaugeData?.success + gaugeData?.failed}
-        text={`${gaugeData?.failed} `}
+        value={gaugeData}
+        startAngle={gaugeData * 2 * -1}
+        endAngle={gaugeData * 2}
+        text={`${gaugeData} `}
       />
     </PieChartElement>
   );

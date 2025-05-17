@@ -1,9 +1,10 @@
-import { LineChartElement } from '../styled/Chart.styled';
+import { Input, LineChartElement } from '../styled/Chart.styled';
 import React, { useEffect, useState } from 'react';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { ICountLogs } from '../utils/Interfaces/ICountLogs';
 import API from '../utils/API';
 import { Subtitle } from '../styled/Base.styled';
+import { flex } from 'styled-system';
 const LineChartComponent = () => {
   const [dataset, setDataSet] = useState<any[]>([]);
   useEffect(() => {
@@ -17,7 +18,7 @@ const LineChartComponent = () => {
   }, []);
   return (
     <LineChartElement>
-      <Subtitle>График поломанных логов по времени</Subtitle>
+      <Subtitle>Time siries of the failed packages</Subtitle>
       <LineChart
         sx={{
           backgroundColor: '#1F1F1F',
@@ -39,7 +40,7 @@ const LineChartComponent = () => {
         }}
         xAxis={[
           {
-            data: dataset.map((item) => item.date),
+            data: dataset.map((item) => item.time),
             scaleType: 'point',
           },
         ]}

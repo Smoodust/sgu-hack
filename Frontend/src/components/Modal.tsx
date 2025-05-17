@@ -17,11 +17,15 @@ import API from '../utils/API';
 const ModalComponent = observer(() => {
   useEffect(() => {
     API.getModalData().then((res) => {
-      ModalStore.setModuleData('warnings', res['warnings']);
-      ModalStore.setModuleData('errors', res['errors']);
-      ModalStore.setModuleData('mainError', res['mainError']);
-      ModalStore.setModuleData('possibleReason', res['possibleReason']);
-      ModalStore.setModuleData('possiblePatch', res['possiblePatch']);
+      ModalStore.setModuleData('warnings', res['result']['warnings']);
+      ModalStore.setModuleData('errors', res['result']['errors']);
+      ModalStore.setModuleData('mainError', res['result']['mainError']);
+      ModalStore.setModuleData(
+        'possibleReason',
+        res['result']['possibleReason']
+      );
+      ModalStore.setModuleData('possiblePatch', res['result']['possiblePatch']);
+            ModalStore.setModuleData('badLines', res['badLines']);
     });
   }, []);
   return (
@@ -51,15 +55,15 @@ const ModalComponent = observer(() => {
           </ModuleHeader>
           <ModuleBody>
             <ModuleChild>
-              <ModuleChildTitle>Пакет</ModuleChildTitle>
+              <ModuleChildTitle>Name</ModuleChildTitle>
               <ModuleChildValue>
                 {ModalStore.getModuleData().name}
               </ModuleChildValue>
             </ModuleChild>
             <ModuleChild>
-              <ModuleChildTitle>Категория</ModuleChildTitle>
+              <ModuleChildTitle>Version</ModuleChildTitle>
               <ModuleChildValue>
-                {ModalStore.getModuleData().category}
+                {ModalStore.getModuleData().version}
               </ModuleChildValue>
             </ModuleChild>
             <ModalDivider />
@@ -76,21 +80,39 @@ const ModalComponent = observer(() => {
               </ModuleChildValue>
             </ModuleChild>
             <ModuleChild>
-              <ModuleChildTitle>mainError</ModuleChildTitle>
+              <ModuleChildTitle>Main error</ModuleChildTitle>
               <ModuleChildValue>
                 {ModalStore.getModuleData().mainError}
               </ModuleChildValue>
             </ModuleChild>
             <ModuleChild>
-              <ModuleChildTitle>possibleReason</ModuleChildTitle>
+              <ModuleChildTitle>Possible reason</ModuleChildTitle>
               <ModuleChildValue>
                 {ModalStore.getModuleData().possibleReason}
               </ModuleChildValue>
             </ModuleChild>
             <ModuleChild>
-              <ModuleChildTitle>possiblePatch</ModuleChildTitle>
+              <ModuleChildTitle>Possible patch</ModuleChildTitle>
               <ModuleChildValue>
                 {ModalStore.getModuleData().possiblePatch}
+              </ModuleChildValue>
+            </ModuleChild>
+              <ModuleChild>
+              <ModuleChildTitle>Bad lines</ModuleChildTitle>
+              <ModuleChildValue>
+                {ModalStore.getModuleData()?.badLines?ModalStore.getModuleData()?.badLines[0]:""}
+              </ModuleChildValue>
+              <ModuleChildValue>
+                  {ModalStore.getModuleData()?.badLines?ModalStore.getModuleData()?.badLines[1]:""}
+              </ModuleChildValue>
+              <ModuleChildValue>
+                  {ModalStore.getModuleData()?.badLines?ModalStore.getModuleData()?.badLines[2]:""}
+              </ModuleChildValue>
+              <ModuleChildValue>
+               {ModalStore.getModuleData()?.badLines?ModalStore.getModuleData()?.badLines[3]:""}
+              </ModuleChildValue>
+              <ModuleChildValue>
+                {ModalStore.getModuleData()?.badLines?ModalStore.getModuleData()?.badLines[4]:""}
               </ModuleChildValue>
             </ModuleChild>
           </ModuleBody>

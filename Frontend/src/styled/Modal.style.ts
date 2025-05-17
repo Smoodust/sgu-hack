@@ -22,6 +22,8 @@ const ModuleBody = styled.div`
   margin-top: 20px;
   flex-direction: column;
   gap: 15px;
+  height: 90vh;
+  overflow-y: auto;
 `;
 const ModuleChild = styled(Paper)`
   background: #1f1f1f !important;

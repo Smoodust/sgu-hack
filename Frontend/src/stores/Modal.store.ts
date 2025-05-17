@@ -6,7 +6,8 @@ class ModalStore {
 
   private _open: boolean = false;
   private _moduleData: any = {};
-
+  private _startDate: string = "";
+private _endDate: string = "";
   getOpen() {
     return this._open;
   }
@@ -23,6 +24,21 @@ class ModalStore {
   }
   clearModuleData() {
     this._moduleData = {};
+  }
+
+    getStartDate() {
+    return this._startDate;
+  }
+
+  setStartDate(date:string) {
+    this._startDate = date;
+  }
+   getEndDate() {
+    return this._endDate;
+  }
+
+  setEndDate(date: string) {
+    this._endDate = date;
   }
 }
 
