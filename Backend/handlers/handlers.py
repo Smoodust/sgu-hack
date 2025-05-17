@@ -111,7 +111,13 @@ async def get_graphs_package_period(body: dict):
             graphs_cluster = dbase.get_graphs_cluster_package_period(log['id'], package, startDate, endDate)
             if graphs_cluster:
                 graphs_cluster_array += [graphs_cluster[1],graphs_cluster[2], graphs_cluster[3], graphs_cluster[4]]
-        return JSONResponse(content={"graphs":graphs['graphs'], "count_logs":graphs['count_logs']}, status_code=200)
+            else:
+                request_info = requests.get(f"http://ml_backend:8000/predict_logs_cordinate?log_url={log['url']}")   
+                request_info = request_info.json()
+                graphs_cluster_array += [request_info['result']['Ox'], request_info['result']['Oy'], request_info['result']['Cluster_id']]
+                dbase.new_cluster(log['id'], request_info['result']['Ox'], request_info['result']['Oy'], request_info['result']['Cluster_id'])
+
+        return JSONResponse(content={"graphs":graphs['graphs'], "count_logs":graphs['count_logs'], "graphs_cluster":graphs_cluster_array}, status_code=200)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
