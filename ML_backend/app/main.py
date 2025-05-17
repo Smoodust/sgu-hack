@@ -1,9 +1,7 @@
 import inspect
 from fastapi import FastAPI, HTTPException, Query
 import requests
-
 from prometheus_fastapi_instrumentator import Instrumentator
-
 import fasttext
 
 from monitoring_app import metrics_app, calculate_sus_lines_drift, SUS_DRIFT_SCORE
@@ -27,6 +25,18 @@ Instrumentator().instrument(app).expose(app)
 
 classifier_model = fasttext.load_model("./NN_models/logs_classifier.bin")
 
+def fetch_log_content(log_url: str) -> str:
+    """Fetch log content from a given URL with error handling."""
+    try:
+        response = requests.get(log_url)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to fetch log: {str(e)}")
+    
+    log_text = response.text
+    if not log_text:
+        raise HTTPException(status_code=404, detail="No logs found")
+    
+    return log_text
 
 @app.get(
         "/predict_logs_cordinate", 
@@ -40,17 +50,11 @@ def predict_logs_cordinate(
         description="URL логов"
     )
 ) -> CordinateResponse:
-    global classifier_model
-    if classifier_model is None:
+    global logs_embedder, kmean
+    if classifier_model is None or kmean is None:
         raise HTTPException(status_code=404, detail="No models found")
     
-    try:
-        log = requests.get(log_url).text
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Failed to fetch log: {str(e)}")
-    
-    if not log:
-        raise HTTPException(status_code=404, detail="No logs found")
+    log = fetch_log_content(log_url)
     
     x, y = logs_embedder(log[-100:]).tolist()
     cluster = kmean(x, y)
