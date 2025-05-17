@@ -158,18 +158,14 @@ async def analyze_log(id: str):
         raise HTTPException(status_code=500, detail=str(e))
     
 
-from pydantic import BaseModel
-
-class ClusterRequest(BaseModel):
-    cluster_dict: dict[str, str]  # Key: cluster ID (str), Value: log message (str)
 
 @router.post("/clusters/description")
 async def get_cluster_description(body: dict):
     try:
         cluster_dict = body["cluster_dict"]
         logs = ""
-        for i in cluster_dict:
-            logs += f'Log {i["id"]} : {i["error"]}\n'
+        for log_id, error_msg in cluster_dict.items():
+            logs += f'Log {log_id} : {error_msg}\n'
         res = errors_description(logs)
         return {"result": res}
     except Exception as e:

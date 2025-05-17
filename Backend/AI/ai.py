@@ -77,7 +77,9 @@ You should find meaning of clusters. So you should result in json where key is c
 
     api_key = "v0Qf8IQ33v2JFWUbsO5P8QoBzoCFk3t3"
     model = "mistral-large-latest"
+
     client = Mistral(api_key=api_key)
+
     chat_response = client.chat.complete(
         model = model,
         messages = [
