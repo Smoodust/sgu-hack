@@ -98,6 +98,9 @@ services:
     restart: unless-stopped
     tty: true
     stdin_open: true
+    networks:
+      - monitoring
+      - backend-network
 
 #################### BACKEND #################### 
   ml_dev:
