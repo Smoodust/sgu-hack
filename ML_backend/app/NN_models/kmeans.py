@@ -4,7 +4,7 @@ import json
 
 class KMeans:
     def __init__(self, json_url: str):
-        with open(json_url) as f:
+        with open(json_url, "r") as f:
            self.centers = np.array(json.load(f))
 
     def __call__(self, x, y):
