@@ -7,7 +7,7 @@ class ModalStore {
   private _open: boolean = false;
   private _moduleData: any = {};
   private _startDate: string = "";
-    private _pieC: any = undefined;
+    private _pieC: any = 0;
       private _scatter: any = undefined;
 private _endDate: string = "";
   getOpen() {

@@ -6,7 +6,8 @@ import API from '../utils/API';
 import { IGauge } from '../utils/Interfaces/IGauge';
 import { Loader, Subtitle } from '../styled/Base.styled';
 import ModalStore from '../stores/Modal.store';
-const PieChartComponent = () => {
+import { observer } from 'mobx-react-lite';
+const PieChartComponent = observer(() => {
   const [gaugeData, setGaugeData] = useState<any>(ModalStore.getPieC());
 
   return (
@@ -42,6 +43,6 @@ const PieChartComponent = () => {
       />:<Loader/>}
     </PieChartElement>
   );
-};
+});
 
 export default PieChartComponent;

@@ -1,5 +1,5 @@
 import { PieChartElement } from '../styled/Chart.styled';
-import { Subtitle } from '../styled/Base.styled';
+import { Loader, Subtitle } from '../styled/Base.styled';
 import { observer } from 'mobx-react-lite';
 import { ScatterChart } from '@mui/x-charts';
 import ModalStore from '../stores/Modal.store';
@@ -11,7 +11,7 @@ const Scatter = observer(() => {
   return (
     <PieChartElement>
       <Subtitle>Scatter claster</Subtitle>
-        <ScatterChart
+       {ModalStore.getScatterC()? <ScatterChart
          sx={{
           backgroundColor: '#1F1F1F',
           '& text tspan': {
@@ -42,7 +42,7 @@ const Scatter = observer(() => {
       ]}
 
             height={410}
-    />
+    />:<Loader/>}
     </PieChartElement>
   );
 });
