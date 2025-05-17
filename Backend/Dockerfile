@@ -1,26 +1,30 @@
-FROM golang:1.23.8 AS build-stage
+FROM python:3.12-slim AS builder
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    curl \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
 WORKDIR /app
+COPY requirements.txt .
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-COPY go.mod go.sum ./
-RUN go mod download
+FROM python:3.12-slim AS development
 
+COPY --from=builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+WORKDIR /app
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /app/main .
+ENV PYTHONPATH="/app" \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
 
-FROM build-stage AS test-stage
-RUN go test -v ./...
-
-FROM golang:alpine AS production-stage
-
-RUN apk --no-cache add ca-certificates
-
-WORKDIR /app
-COPY --from=build-stage /app/main .
-
-RUN chmod +x main
-
-USER nobody:nogroup
-
-ENTRYPOINT ["/app/main"]
+EXPOSE 8001
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001", "--reload"]

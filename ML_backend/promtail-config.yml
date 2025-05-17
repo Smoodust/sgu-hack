@@ -1,0 +1,50 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+- job_name: docker-logs
+  docker_sd_configs:
+    - host: unix:///var/run/docker.sock
+  relabel_configs:
+    - source_labels: ['__meta_docker_container_name']
+      regex: '/(.*)'
+      target_label: 'container'
+
+- job_name: recommendations
+  pipeline_stages:
+    - regex:
+        expression: '^(?P<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) - (?P<level>\w+) - .*'
+    - timestamp:
+        source: time
+        format: "2006-01-02 15:04:05"
+    - labels:
+        level:
+  static_configs:
+    - targets: [localhost]
+      labels:
+        job: ml_recommendations
+        service: ml
+        __path__: /tmp/recommendations.log
+
+- job_name: drift
+  pipeline_stages:
+    - regex:
+        expression: '^(?P<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) - (?P<level>\w+) - .*'
+    - timestamp:
+        source: time
+        format: "2006-01-02 15:04:05"
+    - labels:
+        level:
+  static_configs:
+    - targets: [localhost]
+      labels:
+        job: ml_drift
+        service: ml
+        __path__: /tmp/drift.log

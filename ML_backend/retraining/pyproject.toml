@@ -1,13 +1,15 @@
 [project]
-name = "ml-backend"
+name = "retraining"
 version = "0.1.0"
 description = ""
 authors = [
-    {name = "Smoodust",email = "rustyburing@yandex.ru"}
+    {name = "Smoodust",email = "42073101+Smoodust@users.noreply.github.com"}
 ]
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "torch (>=2.7.0,<3.0.0)",
+    "clearml (>=1.18.0,<2.0.0)"
 ]
 
 
