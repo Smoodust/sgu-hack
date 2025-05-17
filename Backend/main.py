@@ -12,6 +12,7 @@ from handlers.swaggerDis import custom_openapi
 from handlers.handlers import router
 
 URL_PARSE_LOGS = 'https://rdb.altlinux.org/api/export/beehive/ftbfs?branch=sisyphus&arch=x86_64'
+parse_logs(URL_PARSE_LOGS)
 
 
 # # Задача для загрузки логов из внешнего источника
@@ -51,7 +52,7 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -60,7 +61,3 @@ app.add_middleware(
 app.openapi = lambda: custom_openapi(app)
 
 app.include_router(router)
-
-if __name__ == "__main__":
-    parse_logs(URL_PARSE_LOGS)
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

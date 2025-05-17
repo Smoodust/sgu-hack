@@ -171,7 +171,6 @@ def parse_logs(adres: str):
             for i in res.json()['ftbfs']:
                 date1 = datetime.datetime.strptime(i['ftbfs_since'], '%Y-%m-%dT%H:%M:%S')
                 date2 = datetime.datetime.strptime(i['updated'], '%Y-%m-%dT%H:%M:%S')
-                print(date1)
                 dbase.new_logs(i['branch'], i['arch'], i['name'], i['hash'], i['version'], i['url'], date2, date1)
     except Exception as e:
         print(f"Error with request: {str(e)}")

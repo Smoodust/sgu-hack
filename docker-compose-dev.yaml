@@ -138,7 +138,6 @@ services:
       - /app/pycache  
     ports:
       - "8001:8001"
-    command: uvicorn main:app --host 0.0.0.0 --port 8001 --reload
     depends_on:
       - postgres
     networks:
