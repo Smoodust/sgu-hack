@@ -42,7 +42,7 @@ async def get_graphs():
         limit = 20
         for log in logs:
             graphs_cluster = dbase.get_graphs_cluster(log['id'])
-            if graphs_cluster:
+            if graphs_cluster and len(graphs_cluster) >= 5:
                 graphs_cluster_array += [graphs_cluster[1],graphs_cluster[2], graphs_cluster[3], graphs_cluster[4]]
             elif limit > 0:
                 request_info = requests.get(f"http://ml_dev:8000/predict_logs_cordinate?log_url={log['url']}")   
@@ -69,7 +69,7 @@ async def get_graphs_period(period: dict):
         limit = 20
         for log in logs:
             graphs_cluster = dbase.get_graphs_cluster_period(log['id'], startDate, endDate)
-            if graphs_cluster:
+            if graphs_cluster and len(graphs_cluster) >= 5:
                 graphs_cluster_array += [graphs_cluster[1],graphs_cluster[2], graphs_cluster[3], graphs_cluster[4]]
             elif limit > 0:
                 request_info = requests.get(f"http://ml_dev:8000/predict_logs_cordinate?log_url={log['url']}")   
@@ -94,8 +94,8 @@ async def get_graphs_package(package: str):
         limit = 20
         for log in logs:
             graphs_cluster = dbase.get_graphs_cluster_package(log['id'], package)
-            if graphs_cluster:
-                graphs_cluster_array += [graphs_cluster[1],graphs_cluster[2], graphs_cluster[3], graphs_cluster[4]]
+            if graphs_cluster and len(graphs_cluster) >= 5:  # Проверяем, что в массиве достаточно элементов
+                graphs_cluster_array += [graphs_cluster[1], graphs_cluster[2], graphs_cluster[3], graphs_cluster[4]]
             elif limit > 0:
                 request_info = requests.get(f"http://ml_dev:8000/predict_logs_cordinate?log_url={log['url']}")   
                 request_info = request_info.json()
@@ -122,7 +122,7 @@ async def get_graphs_package_period(body: dict):
         limit = 20
         for log in logs:
             graphs_cluster = dbase.get_graphs_cluster_package_period(log['id'], package, startDate, endDate)
-            if graphs_cluster:
+            if graphs_cluster and len(graphs_cluster) >= 5:
                 graphs_cluster_array += [graphs_cluster[1],graphs_cluster[2], graphs_cluster[3], graphs_cluster[4]]
             elif limit > 0:
                 request_info = requests.get(f"http://ml_dev:8000/predict_logs_cordinate?log_url={log['url']}")   
