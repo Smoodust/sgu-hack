@@ -178,7 +178,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./Frontend:/app
+      - ./Frontend/src:/app/src
     environment:
       - CHOKIDAR_USEPOLLING=true
 
