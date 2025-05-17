@@ -50,8 +50,7 @@ async def get_graphs():
                 graphs_cluster_array += [request_info['x'], request_info['y'], request_info['cluster']]
                 dbase.new_cluster(log['id'], request_info['x'], request_info['y'], request_info['cluster']) 
                 limit -= 1
-            else:
-                break
+    
 
         return JSONResponse(content={"graphs":graphs['graphs'], "count_logs":graphs['count_logs'], "graphs_cluster":graphs_cluster_array}, status_code=200)
     except Exception as e:
@@ -159,17 +158,19 @@ async def analyze_log(id: str):
         raise HTTPException(status_code=500, detail=str(e))
     
 
-# Хандлер для дескрипции кластера
+from pydantic import BaseModel
+
+class ClusterRequest(BaseModel):
+    cluster_dict: dict[str, str]  # Key: cluster ID (str), Value: log message (str)
+
 @router.post("/clusters/description")
 async def get_cluster_description(body: dict):
     try:
-        ## Хэш таблица с ключом - id кластера и значением - лог
         cluster_dict = body["cluster_dict"]
         logs = ""
-        for cluster_id, log in cluster_dict.items():
-            logs += f'Log {cluster_id}: {log} \n'
-        ## Дескрипция ошибок в кластере
+        for i in cluster_dict:
+            logs += f'Log {i["id"]} : {i["error"]}\n'
         res = errors_description(logs)
-        return JSONResponse(content={"result":res}, status_code=200)
+        return {"result": res}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
