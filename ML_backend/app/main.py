@@ -7,6 +7,7 @@ import fasttext
 
 from monitoring_app import metrics_app, calculate_sus_lines_drift, SUS_DRIFT_SCORE
 from NN_models.network import logs_embedder
+from NN_models.kmeans import kmean
 from models import SuspiciousLineResponse
 
 
@@ -56,7 +57,10 @@ def predict_logs_cordinate(
     if not log:
         raise HTTPException(status_code=404, detail="No logs found")
     
-    return logs_embedder(log[-100:]).tolist()
+    x, y = logs_embedder(log[-100:]).tolist()
+    center = kmean(x, y)
+    
+    return [x, y, center]
 
 
 @app.get(

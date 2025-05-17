@@ -27,3 +27,5 @@ class KMeans:
 
     def __call__(self, x, y):
       return np.argmin(((self.centers - np.array([x, y]))**2).sum(axis=1))
+
+kmean = KMeans()
