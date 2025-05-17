@@ -1,3 +1,4 @@
+import inspect
 from fastapi import FastAPI, HTTPException, Query
 import requests
 
@@ -8,7 +9,7 @@ import fasttext
 from monitoring_app import metrics_app, calculate_sus_lines_drift, SUS_DRIFT_SCORE
 from NN_models.network import logs_embedder
 from NN_models.kmeans import kmean
-from models import SuspiciousLineResponse
+from models import SuspiciousLineResponse, CordinateResponse
 
 
 app = FastAPI(
@@ -30,21 +31,15 @@ classifier_model = fasttext.load_model("./NN_models/logs_classifier.bin")
 @app.get(
         "/predict_logs_cordinate", 
         status_code=200,
+        response_model=CordinateResponse,
         summary="Отдает кординаты для лога"
 )
 def predict_logs_cordinate(
     log_url: str = Query(
         ...,
         description="URL логов"
-    ), 
-    top_k: int = Query(
-        5,
-        ge=1,
-        le=50,
-        example=5,
-        description="Количество отдаваемых строчек"
     )
-) -> list[float]:
+) -> CordinateResponse:
     global classifier_model
     if classifier_model is None:
         raise HTTPException(status_code=404, detail="No models found")
@@ -58,9 +53,9 @@ def predict_logs_cordinate(
         raise HTTPException(status_code=404, detail="No logs found")
     
     x, y = logs_embedder(log[-100:]).tolist()
-    center = kmean(x, y)
+    cluster = kmean(x, y)
     
-    return [x, y, center]
+    return CordinateResponse(x=x, y=y, cluster=cluster)
 
 
 @app.get(
@@ -103,11 +98,10 @@ def predict_sus_lines(
             continue
             
         try:
-            (_,), (prob,) = classifier_model.predict(line.strip(), k=1)
-            predictions.append((line_a + "\n" + line_b, prob))
+            classifier_model.predict(line.strip(), k=1)
         except Exception as e:
-            continue 
-
+            prob = inspect.trace()[-1][0].f_locals['probs'][0]
+            predictions.append((line_a + "\n" + line_b, prob))
     predictions.sort(key=lambda x: x[1], reverse=True)
     calculate_sus_lines_drift(predictions)
     top_sus_lines = [line for line, _ in predictions[:top_k]]

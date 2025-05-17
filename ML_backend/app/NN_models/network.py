@@ -11,7 +11,7 @@ class BertLikeONNX:
             providers=rt.get_available_providers(),
         )
         self.tokenizer = Tokenizer.from_file(
-            "tokenizer.json"
+            "NN_models/tokenizer.json"
         )
         self.tokenizer.enable_truncation(max_length=512)
 
@@ -27,4 +27,4 @@ class BertLikeONNX:
         return preds[0]
 
 
-logs_embedder = BertLikeONNX("embedder.onnx")
+logs_embedder = BertLikeONNX("NN_models/embedder.onnx")

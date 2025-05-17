@@ -19,3 +19,18 @@ class SuspiciousLineResponse(BaseModel):
                 ]
             }
         }
+
+class CordinateResponse(BaseModel):
+    """
+    Модель ответа с подозрительными строками логов
+    """
+    x: float
+    y: float
+    cluster: int
+    
+    class Config:
+        schema_extra = {
+            "x": 0.1,
+            "y": -0.2,
+            "cluster": 2
+        }
