@@ -170,7 +170,7 @@ class Dbase:
         self.cursor.execute("""
             SELECT c.* 
             FROM cluster c
-            JOIN logs l ON c.log_id = l.id
+            INNER JOIN logs l ON c.log_id = l.id
             WHERE c.log_id = %s AND l.tbfs_since BETWEEN %s AND %s
         """, (log_id, startDate, endDate))
         clusters = self.cursor.fetchall()
@@ -180,7 +180,7 @@ class Dbase:
         self.cursor.execute("""
             SELECT c.* 
             FROM cluster c
-            JOIN logs l ON c.log_id = l.id
+            INNER JOIN logs l ON c.log_id = l.id
             WHERE c.log_id = %s AND l.name = %s
         """, (log_id, package))
         clusters = self.cursor.fetchall()
@@ -190,7 +190,7 @@ class Dbase:
         self.cursor.execute("""
             SELECT c.* 
             FROM cluster c
-            JOIN logs l ON c.log_id = l.id
+            INNER JOIN logs l ON c.log_id = l.id
             WHERE c.log_id = %s AND l.name = %s AND l.tbfs_since BETWEEN %s AND %s
         """, (log_id, package, startDate, endDate))
         clusters = self.cursor.fetchall()
