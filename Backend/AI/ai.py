@@ -71,8 +71,10 @@ You are a senior Linux packaging specialist with expertise in:
 ###### Instruction ######
 You should find meaning of clusters. So you should result in json where key is cluster id and value is string of main error reason for this cluster. Write answer using this json format:
 {{
-    <cluster_id. Should be integer>: "<String where you describe main reason of build failure for logs in this cluster.>"
+    "cluster_id": "description of the error"
 }}
+
+IMPORTANT: Make sure to use double quotes for both keys and values in the JSON.
     """
 
     api_key = "v0Qf8IQ33v2JFWUbsO5P8QoBzoCFk3t3"
@@ -89,15 +91,24 @@ You should find meaning of clusters. So you should result in json where key is c
             },
         ]
     )
-    s = chat_response.choices[0].message.content
-    s = s.replace("```json", "").replace("```", "")
-    s = s[next(idx for idx, c in enumerate(s) if c in "{[") :]
+    
+    # Получаем ответ и очищаем его от markdown разметки
+    response_text = chat_response.choices[0].message.content
+    response_text = response_text.replace("```json", "").replace("```", "").strip()
+    
+    # Находим начало JSON
+    start_idx = response_text.find("{")
+    end_idx = response_text.rfind("}") + 1
+    
+    if start_idx == -1 or end_idx == 0:
+        raise ValueError("No valid JSON found in the response")
+    
+    json_str = response_text[start_idx:end_idx]
+    
     try:
-        return json.loads(s)
+        return json.loads(json_str)
     except json.JSONDecodeError as e:
-        try:
-            return json.loads(s[: e.pos])
-        except Exception as e:
-            raise e
+        # Если не удалось распарсить JSON, возвращаем ошибку
+        raise ValueError(f"Failed to parse JSON response: {str(e)}\nResponse text: {json_str}")
 
 
