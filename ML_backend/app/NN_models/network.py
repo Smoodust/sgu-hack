@@ -1,7 +1,9 @@
 import onnx
 import onnxruntime as rt
 import numpy as np
+import random
 from tokenizers import Tokenizer
+from NN_models.kmeans import kmean
 
 
 class BertLikeONNX:
@@ -23,8 +25,8 @@ class BertLikeONNX:
                 "input_ids": np.expand_dims(np.array(output.ids), axis=0).astype("int64"),
                 "attention_mask": np.expand_dims(np.array(output.attention_mask), axis=0).astype("int64")
             }
-        )[0]
-        return preds[0]
+        )[0][0]
+        return (preds+random.choice(kmean.centers))/2
 
 
 logs_embedder = BertLikeONNX("NN_models/embedder.onnx")
