@@ -6,6 +6,8 @@ from datetime import datetime
 
 from starlette.middleware.cors import CORSMiddleware
 
+from prometheus_fastapi_instrumentator import Instrumentator
+
 from db.db import parse_logs
 from db.config import URL_PARSE_LOGS
 from handlers.swaggerDis import custom_openapi
@@ -41,6 +43,7 @@ scheduler.start()
 
 app = FastAPI()
 
+
 origins = [
     "http://localhost.tiangolo.com",
     "https://localhost.tiangolo.com",
@@ -57,6 +60,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+Instrumentator().instrument(app).expose(app)
 
 app.openapi = lambda: custom_openapi(app)
 

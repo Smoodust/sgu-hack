@@ -15,4 +15,4 @@ scrape_configs:
     label_value_length_limit: 0
     target_limit: 0
     static_configs:
-      - targets: ["development:8000"]
+      - targets: ["ml_dev:8000"]
