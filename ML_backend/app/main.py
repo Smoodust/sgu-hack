@@ -116,7 +116,7 @@ def predict_sus_lines(
         summary="Проверка алертов Grafana для детекции подозрительных строк"
 )
 def check_alert():
-    SUS_DRIFT_SCORE.set(1)
+    SUS_DRIFT_SCORE.set(0.2)
     return {
         "OH, NO!!!! AMOGUS~~~"
     }
