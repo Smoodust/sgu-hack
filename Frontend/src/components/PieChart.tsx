@@ -8,12 +8,11 @@ import { Loader, Subtitle } from '../styled/Base.styled';
 import ModalStore from '../stores/Modal.store';
 import { observer } from 'mobx-react-lite';
 const PieChartComponent = observer(() => {
-  const [gaugeData, setGaugeData] = useState<any>(ModalStore.getPieC());
 
   return (
     <PieChartElement>
       <Subtitle>Error logs counts</Subtitle>
-      {gaugeData?<Gauge
+  <Gauge
         height={440}
         sx={{
           backgroundColor: '#1F1F1F',
@@ -36,11 +35,11 @@ const PieChartComponent = observer(() => {
             fill: '#ccccdd !important',
           },
         }}
-        value={gaugeData? gaugeData: 0}
-        startAngle={gaugeData * 2 * -1}
-        endAngle={gaugeData * 2}
-        text={`${gaugeData} `}
-      />:<Loader/>}
+        value={ModalStore.getPieC()? ModalStore.getPieC(): 0}
+        startAngle={ModalStore.getPieC() * 2 * -1}
+        endAngle={ModalStore.getPieC() * 2}
+        text={`${ModalStore.getPieC()} `}
+      />
     </PieChartElement>
   );
 });

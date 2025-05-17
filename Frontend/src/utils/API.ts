@@ -41,8 +41,11 @@ class API {
       const res = await axios.get(this.host + this.getCountLogsWay);
 
       if (res){ 
+      
+
         ModalStore.setPieC(res.data['count_logs'])
-           ModalStore.setScatterC(res.data['graphs_cluster'].map((item: any) => ({ x: item[0], y: item[1], id: item[4] })))
+     
+
         return res.data['graphs'];
       }
       return [];

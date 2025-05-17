@@ -8,6 +8,7 @@ class ModalStore {
   private _moduleData: any = {};
   private _startDate: string = "";
     private _pieC: any = 0;
+        private _lineC: any = undefined;
       private _scatter: any = undefined;
 private _endDate: string = "";
   getOpen() {
@@ -50,6 +51,14 @@ private _endDate: string = "";
   setPieC(open: any) {
     this._pieC = open;
   }
+  getLineC() {
+    return this._lineC;
+  }
+
+  setLineC(open: any) {
+    this._lineC = open;
+  }
+
 
    getScatterC() {
     return this._scatter;

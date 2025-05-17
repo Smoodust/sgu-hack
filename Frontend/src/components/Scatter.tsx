@@ -36,10 +36,7 @@ const Scatter = observer(() => {
         }}
 
     dataset={ModalStore.getScatterC()??[]}
-      series={[
-        { datasetKeys: { id: 'id', x: 'x', y: 'y' }, label: 'Данные', color:"green" },
- 
-      ]}
+      series={ModalStore.getScatterC()}
 
             height={410}
     />:<Loader/>}
