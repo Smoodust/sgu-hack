@@ -1,3 +1,4 @@
 tokenizer.json
 logs_classifier.bin
 embedder.onnx
+kmeans_centers.json
