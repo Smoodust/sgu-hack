@@ -89,7 +89,7 @@ def predict_sus_lines(
     if not log:
         raise HTTPException(status_code=404, detail="No logs found")
     
-    lines = log.splitlines()[-500:] 
+    lines = log.splitlines()[-100:] 
     predictions = []
 
     for line_a, line_b in zip(lines[:-1], lines[1:]):
