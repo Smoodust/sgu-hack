@@ -30,7 +30,13 @@ def custom_openapi(app: FastAPI):
                                         "logs": {
                                             "type": "array",
                                             "items": {
-                                                "type": "object"
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {"type": "string"},
+                                                    "url": {"type": "string"},
+                                                    "updated": {"type": "string", "format": "date-time"},
+                                                    "tbfs_since": {"type": "string", "format": "date-time"}
+                                                }
                                             }
                                         }
                                     }
@@ -68,7 +74,13 @@ def custom_openapi(app: FastAPI):
                                     "type": "object",
                                     "properties": {
                                         "log": {
-                                            "type": "object"
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {"type": "string"},
+                                                "url": {"type": "string"},
+                                                "updated": {"type": "string", "format": "date-time"},
+                                                "tbfs_since": {"type": "string", "format": "date-time"}
+                                            }
                                         }
                                     }
                                 }
@@ -84,7 +96,7 @@ def custom_openapi(app: FastAPI):
         "/graphs": {
             "get": {
                 "summary": "Графики количества неисправленных пакетов за последний месяц",
-                "description": "Возвращает статистику по количеству неисправленных пакетов за последний месяц",
+                "description": "Возвращает статистику по количеству неисправленных пакетов за последний месяц, включая кластерный анализ",
                 "responses": {
                     "200": {
                         "description": "Успешный ответ",
@@ -103,6 +115,13 @@ def custom_openapi(app: FastAPI):
                                         "count_logs": {
                                             "type": "integer",
                                             "description": "Общее количество логов"
+                                        },
+                                        "graphs_cluster": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            },
+                                            "description": "Данные для кластерного анализа"
                                         }
                                     }
                                 }
@@ -118,7 +137,7 @@ def custom_openapi(app: FastAPI):
         "/graphs/period": {
             "post": {
                 "summary": "Получить графики за период",
-                "description": "Возвращает графики за указанный временной период",
+                "description": "Возвращает графики за указанный временной период с кластерным анализом",
                 "requestBody": {
                     "required": True,
                     "content": {
@@ -155,6 +174,15 @@ def custom_openapi(app: FastAPI):
                                             "items": {
                                                 "type": "object"
                                             }
+                                        },
+                                        "count_logs": {
+                                            "type": "integer"
+                                        },
+                                        "graphs_cluster": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
                                         }
                                     }
                                 }
@@ -170,7 +198,7 @@ def custom_openapi(app: FastAPI):
         "/graphs/package/{package}": {
             "get": {
                 "summary": "Получить графики по пакету",
-                "description": "Возвращает графики для указанного пакета",
+                "description": "Возвращает графики для указанного пакета с кластерным анализом",
                 "parameters": [
                     {
                         "name": "package",
@@ -195,6 +223,15 @@ def custom_openapi(app: FastAPI):
                                             "items": {
                                                 "type": "object"
                                             }
+                                        },
+                                        "count_logs": {
+                                            "type": "integer"
+                                        },
+                                        "graphs_cluster": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
                                         }
                                     }
                                 }
@@ -210,7 +247,7 @@ def custom_openapi(app: FastAPI):
         "/graphs/packageANDperiod": {
             "post": {
                 "summary": "Получить графики по пакету и периоду",
-                "description": "Возвращает графики для указанного пакета за определенный период",
+                "description": "Возвращает графики для указанного пакета за определенный период с кластерным анализом",
                 "requestBody": {
                     "required": True,
                     "content": {
@@ -219,7 +256,8 @@ def custom_openapi(app: FastAPI):
                                 "type": "object",
                                 "properties": {
                                     "package": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "description": "Название пакета"
                                     },
                                     "startDate": {
                                         "type": "string",
@@ -250,6 +288,9 @@ def custom_openapi(app: FastAPI):
                                             "items": {
                                                 "type": "object"
                                             }
+                                        },
+                                        "count_logs": {
+                                            "type": "integer"
                                         }
                                     }
                                 }
@@ -265,7 +306,7 @@ def custom_openapi(app: FastAPI):
         "/logs/analyze/{id}": {
             "get": {
                 "summary": "Анализ лога",
-                "description": "Анализирует лог с помощью AI и возвращает подозрительные строки",
+                "description": "Анализирует лог с помощью AI и возвращает подозрительные строки и результаты анализа",
                 "parameters": [
                     {
                         "name": "id",
@@ -292,6 +333,13 @@ def custom_openapi(app: FastAPI):
                                         "log": {
                                             "type": "string",
                                             "description": "Содержимое лога"
+                                        },
+                                        "badLines": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            },
+                                            "description": "Список подозрительных строк в логе"
                                         }
                                     }
                                 }

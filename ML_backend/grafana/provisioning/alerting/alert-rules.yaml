@@ -3,10 +3,10 @@ groups:
     - orgId: 1
       name: Drift
       folder: Drift
-      interval: 10s
+      interval: 1m
       rules:
-        - uid: aelvlmficpfr4c
-          title: Drift Alert
+        - uid: aem5e887zqygwd
+          title: SUS ALERT
           condition: C
           data:
             - refId: A
@@ -17,7 +17,7 @@ groups:
               model:
                 disableTextWrap: false
                 editorMode: builder
-                expr: drift_score{instance="development:8000"}
+                expr: drift_score{job="drift"}
                 fullMetaSearch: false
                 includeNullMetadata: true
                 instant: true
@@ -33,8 +33,8 @@ groups:
                 conditions:
                     - evaluator:
                         params:
-                            - 0.07
-                        type: gt
+                            - 0.3
+                        type: lte
                       operator:
                         type: and
                       query:
@@ -54,13 +54,11 @@ groups:
                 type: threshold
           noDataState: NoData
           execErrState: Error
-          for: 10s
-          keepFiringFor: 10s
+          for: 1m
+          keepFiringFor: 1m
           annotations:
-            description: Oh, no! It's Drifting!!!!
-            summary: Oh, no! It's Drifting!!!!
-          labels:
-            drfit: "true"
+            description: OH, NO!!! AMOGUS!!!
+            summary: OH, NO!!! AMOGUS!!!
           isPaused: false
           notification_settings:
-            receiver: Telegram Bot
+            receiver: TG Alert

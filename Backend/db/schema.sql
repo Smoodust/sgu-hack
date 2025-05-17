@@ -9,3 +9,12 @@ CREATE TABLE logs (
     updated TIMESTAMP NOT NULL,
     tbfs_since TIMESTAMP NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS cluster (
+    id SERIAL PRIMARY KEY,
+    log_id INT NOT NULL,
+    Ox DOUBLE PRECISION NOT NULL,
+    Oy DOUBLE PRECISION NOT NULL,
+    Cluster_id INT NOT NULL,
+    FOREIGN KEY (log_id) REFERENCES logs(id)
+);
