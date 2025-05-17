@@ -4,9 +4,9 @@ import { PieChart } from '@mui/x-charts/PieChart';
 import { useEffect, useState } from 'react';
 import API from '../utils/API';
 import { IGauge } from '../utils/Interfaces/IGauge';
-import { Subtitle } from '../styled/Base.styled';
+import { Loader, Subtitle } from '../styled/Base.styled';
 const PieChartComponent = () => {
-  const [gaugeData, setGaugeData] = useState<any>({ count_logs: 0 });
+  const [gaugeData, setGaugeData] = useState<any>();
   useEffect(() => {
     API.getGauge()
       .then((res) => {
@@ -19,7 +19,7 @@ const PieChartComponent = () => {
   return (
     <PieChartElement>
       <Subtitle>Error logs counts</Subtitle>
-      <Gauge
+      {gaugeData?<Gauge
         height={440}
         sx={{
           backgroundColor: '#1F1F1F',
@@ -42,11 +42,11 @@ const PieChartComponent = () => {
             fill: '#ccccdd !important',
           },
         }}
-        value={gaugeData}
+        value={gaugeData? gaugeData: 0}
         startAngle={gaugeData * 2 * -1}
         endAngle={gaugeData * 2}
         text={`${gaugeData} `}
-      />
+      />:<Loader/>}
     </PieChartElement>
   );
 };
